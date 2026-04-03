@@ -68,7 +68,7 @@ on:
         type: string
              
 env:
-  REPO_URL: https://github.com/openwrt/openwrt
+  REPO_URL: https://github.com/immortalwrt/immortalwrt
   REPO_BRANCH: openwrt-25.12
   CONFIG_FILE: configs/${{ github.event.inputs.device }}
   DIY_SCRIPT: diy-script.sh
@@ -193,4 +193,23 @@ jobs:
       if: (!cancelled())
       run: df -hT
 
-      
+    - name: Prepare Firmware Files      
+      run: |
+        mkdir -p rom info
+        if [ "${{ github.event.inputs.device }}" = "x86_64" ]; then
+          cp -a openwrt/bin/targets/x86/*/*-ext4-combined-efi.img.gz rom/
+          cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
+          cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
+          cp -a openwrt/bin/targets/x86/*/*-x86-64-generic.manifest info/manifest.txt
+          cp -a openwrt/bin/targets/x86/*/config.buildinfo info/config.buildinfo
+          cd rom && sha256sum *gz > ../info/sha256sums.txt
+        else
+          cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
+          cp -a openwrt/bin/targets/rockchip/*/*.manifest info/manifest.txt
+          cp -a openwrt/bin/targets/rockchip/*/config.buildinfo info/config.buildinfo
+          cd rom && sha256sum *gz > ../info/sha256sums.txt
+        fi
+        cd ..
+        tar zcf rom/buildinfo_${{ github.event.inputs.device }}.tar.gz info
+
+        
