@@ -13,12 +13,9 @@ on:
         options:
           - 'friendlyarm_nanopc-t4'
           - 'friendlyarm_nanopc-t6'
-          - 'friendlyarm_nanopi-m5'
-          - 'friendlyarm_nanopi-neo3'
           - 'friendlyarm_nanopi-r2c'
           - 'friendlyarm_nanopi-r2c-plus'
           - 'friendlyarm_nanopi-r2s'
-          - 'friendlyarm_nanopi-r2s-plus'
           - 'friendlyarm_nanopi-r3s'
           - 'friendlyarm_nanopi-r4s'
           - 'friendlyarm_nanopi-r4se'
@@ -69,9 +66,9 @@ on:
         required: false
         default: 'password'
         type: string
-        
+             
 env:
-  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_URL: https://github.com/openwrt/openwrt
   REPO_BRANCH: openwrt-25.12
   CONFIG_FILE: configs/${{ github.event.inputs.device }}
   DIY_SCRIPT: diy-script.sh
@@ -167,3 +164,33 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a      
+
+    - name: Load Custom Configuration
+      run: |
+        [ -e files ] && mv files openwrt/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE openwrt/.config
+        chmod +x $DIY_SCRIPT
+        cd openwrt
+        $GITHUB_WORKSPACE/$DIY_SCRIPT
+
+    - name: Download DL Package
+      run: |
+        cd openwrt
+        make defconfig
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Compile Firmware
+      id: compile
+      run: |
+        cd openwrt
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+
+    - name: Check Space Usage
+      if: (!cancelled())
+      run: df -hT
+
+      
