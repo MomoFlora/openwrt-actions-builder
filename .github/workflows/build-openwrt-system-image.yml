@@ -11,8 +11,6 @@ on:
         default: 'x86_64'
         type: choice
         options:
-          - 'fastrhino_r66s'
-          - 'fastrhino_r68s'
           - 'friendlyarm_nanopc-t4'
           - 'friendlyarm_nanopc-t6'
           - 'friendlyarm_nanopi-m5'
@@ -29,38 +27,37 @@ on:
           - 'friendlyarm_nanopi-r6c'
           - 'friendlyarm_nanopi-r6s'
           - 'friendlyarm_nanopi-r76s'
-          - 'firefly_station-p2'
-          - 'hinlink_opc-h28k'
-          - 'hinlink_opc-h29k'
-          - 'hinlink_opc-h66k'
-          - 'hinlink_opc-h68k'
-          - 'hinlink_opc-h69k'
-          - 'hinlink_opc-ht2'
+          - 'linkease_easepi-r1'
+          - 'fastrhino_r66s'
+          - 'fastrhino_r68s'
+          - 'nlnet_xiguapi-v3'
+          - 'radxa_cm3-io'
           - 'radxa_e20c'
-          - 'radxa_e24c'
           - 'radxa_e25'
           - 'radxa_e52c'
-          - 'radxa_e54c'
           - 'radxa_rock-2a'
           - 'radxa_rock-2f'
           - 'radxa_rock-3a'
           - 'radxa_rock-3b'
           - 'radxa_rock-3c'
           - 'radxa_rock-4c-plus'
-          - 'radxa_rock-pi-4a'
           - 'radxa_rock-4d'
           - 'radxa_rock-4se'
+          - 'radxa_rock-5-itx'
           - 'radxa_rock-5a'
           - 'radxa_rock-5b'
+          - 'radxa_rock-5b-plus'
           - 'radxa_rock-5c'
+          - 'radxa_rock-5t'
+          - 'radxa_rock-pi-4a'
+          - 'radxa_rock-pi-e'
+          - 'radxa_rock-pi-s'
           - 'radxa_zero-3e'
           - 'radxa_zero-3w'
           - 'xunlong_orangepi-5'
-          - 'xunlong_orangepi-5-max'
           - 'xunlong_orangepi-5-plus'
-          - 'xunlong_orangepi-5-ultra'
           - 'xunlong_orangepi-r1-plus'
-          - 'xunlong_orangepi-r1-plus-lts'      
+          - 'xunlong_orangepi-r1-plus-lts' 
           - 'x86_64'
       lan_addr:
         description: 'Setting default LAN address'
@@ -74,13 +71,12 @@ on:
         type: string
         
 env:
-  REPO_URL: https://github.com/coolsnowwolf/lede
-  REPO_BRANCH: master
+  REPO_URL: https://github.com/immortalwrt/immortalwrt
+  REPO_BRANCH: openwrt-25.12
   CONFIG_FILE: configs/${{ github.event.inputs.device }}
   DIY_SCRIPT: diy-script.sh
   CACHE_TOOLCHAIN: true
   FIRMWARE_RELEASE: true
-  FIRMWARE_TAG: ${{ github.event.inputs.device }}
   TZ: Asia/Shanghai
 
 jobs:
@@ -112,7 +108,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        docker rmi $(docker images -q)
+        docker rmi -f $(docker images -q) 2>/dev/null || true
         sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
         sudo -E apt-get -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mongodb* moby* || true
         sudo -E apt-get -y update
@@ -121,3 +117,14 @@ jobs:
         sudo -E apt-get -y autoremove --purge
         sudo -E apt-get -y clean
         sudo timedatectl set-timezone "$TZ"
+
+    - name: Maximize build space
+      uses: MomoFlora/maximize-build-space@master
+      with:
+        swap-size-mb: 1024
+        temp-reserve-mb: 4608
+        root-reserve-mb: 3584
+        remove-dotnet: "true"
+        remove-android: "true"
+        remove-haskell: "true"
+        remove-codeql: "true"
