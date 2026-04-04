@@ -99,7 +99,7 @@ cp -f $GITHUB_WORKSPACE/doc/banner package/base-files/files/etc/banner
 
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
-grep HASH target/linux/generic/kernel-6.18 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
+grep HASH target/linux/generic/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
 
 # 使用 nginx 替换 uhttpd
 sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci/Makefile
