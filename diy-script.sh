@@ -179,6 +179,29 @@ cp -f $GITHUB_WORKSPACE/doc/bbr3/* target/linux/generic/backport-6.12
 # BTF
 cp -f $GITHUB_WORKSPACE/doc/btf/* target/linux/generic/hack-6.12
 
+# 增加汉化
+cat << 'EOF' >> feeds/luci/modules/luci-base/po/zh_Hans/base.po
+
+msgid "Confirm Reboot"
+msgstr "确认重启"
+
+msgid "Are you sure you want to reboot the system?"
+msgstr "你确认要重启系统？"
+
+msgid "Confirm"
+msgstr "确认"
+
+msgid "Use as docker root directory (/opt)"
+msgstr "作为 docker 根目录使用（/opt）"
+
+msgid "NFtables Firewall"
+msgstr "NFtables 防火墙"
+
+msgid "IPtables Firewall"
+msgstr "IPtables 防火墙"
+
+EOF
+
 # 加入网卡驱动（ngbe / txgbe）
 cat << 'EOF' >> package/kernel/linux/modules/netdevices.mk
 
