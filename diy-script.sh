@@ -70,6 +70,32 @@ git clone --depth=1 https://github.com/sbwml/packages_utils_runc feeds/packages/
 git clone --depth=1 -b openwrt-25.12 https://github.com/MomoFlora/feeds_packages_net_nginx feeds/packages/net/nginx
 git clone --depth=1 -b master https://github.com/MomoFlora/feeds_packages_net_nginx-util feeds/packages/net/nginx-util
 
+# 关闭 CPU 安全缓解
+sed -i 's,rootwait,rootwait mitigations=off,g' target/linux/rockchip/image/default.bootscript
+sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/grub-efi.cfg
+sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/grub-iso.cfg
+sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/grub-pc.cfg
+
+# 设置默认 LAN 口 IP
+sed -i "s/192.168.1.1/$LAN/g" package/base-files/files/bin/config_generate
+
+# 设置默认密码
+if [ -n "$ROOT_PASSWORD" ]; then
+    # sha256 encryption
+    default_password=$(openssl passwd -5 $ROOT_PASSWORD)
+    sed -i "s|^root:[^:]*:|root:${default_password}:|" package/base-files/files/etc/shadow
+fi
+
+# 使用 nginx 替换 uhttpd
+sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci/Makefile
+sed -i 's/+uhttpd-mod-ubus //' feeds/luci/collections/luci/Makefile
+sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci-light/Makefile
+sed -i "s/+luci /+luci-nginx /g" feeds/luci/collections/luci-ssl-openssl/Makefile
+sed -i "s/+luci /+luci-nginx /g" feeds/luci/collections/luci-ssl/Makefile
+sed -i 's/+uhttpd +uhttpd-mod-ubus /+luci-nginx /g' feeds/packages/net/wg-installer/Makefile
+sed -i '/uhttpd-mod-ubus/d' feeds/luci/collections/luci-light/Makefile
+sed -i 's/+luci-nginx \\$/+luci-nginx/' feeds/luci/collections/luci-light/Makefile
+
 # libubox -O2
 sed -i '/TARGET_CFLAGS/ s/$/ -O2/' package/libs/libubox/Makefile
 
@@ -93,12 +119,6 @@ sed -i 's,frp 客户端,Frp 客户端,g' feeds/luci/applications/luci-app-frpc/p
 # 版本号
 sed -i 's/VERSION_DIST:=$(if $(VERSION_DIST),$(VERSION_DIST),ImmortalWrt)/VERSION_DIST:=$(if $(VERSION_DIST),$(VERSION_DIST),ZeroWrt)/g' include/version.mk
 sed -i 's/VERSION_MANUFACTURER:=$(if $(VERSION_MANUFACTURER),$(VERSION_MANUFACTURER),ImmortalWrt)/VERSION_MANUFACTURER:=$(if $(VERSION_MANUFACTURER),$(VERSION_MANUFACTURER),ZeroWrt)/g' include/version.mk
-
-# 关闭 CPU 安全缓解
-sed -i 's,rootwait,rootwait mitigations=off,g' target/linux/rockchip/image/default.bootscript
-sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/grub-efi.cfg
-sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/grub-iso.cfg
-sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/grub-pc.cfg
 
 # uwsgi - 修复超时问题
 sed -i '$a cgi-timeout = 600' feeds/packages/net/uwsgi/files-luci-support/luci-*.ini
