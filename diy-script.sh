@@ -3,7 +3,9 @@
 # 移除要替换的包
 rm -rf feeds/packages/lang/golang
 rm -rf feeds/luci/themes/luci-theme-argon
-rm -rf feeds/luci/applications/{luci-app-dae,luci-app-daed,luci-app-homeproxy,luci-app-openclash,luci-app-passwall}
+rm -rf package/kernel/{r8168,r8101,r8125,r8126,r8127}
+rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
+rm -rf feeds/luci/applications/{luci-app-dae,luci-app-daed,luci-app-dockerman,luci-app-homeproxy,luci-app-openclash,luci-app-passwall}
 rm -rf feeds/packages/net/{dae,daed,xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,mosdns,microsocks,naiveproxy,open-app-filter,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 
 # Git稀疏克隆，只克隆指定目录到本地
@@ -46,7 +48,65 @@ git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall2 packag
 git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/new/openwrt-passwall-packages
 git_sparse_clone master https://github.com/vernesong/OpenClash luci-app-openclash
 
+# Realtek 以太网驱动程序 - R8168 & R8125 & R8126 & R8152 & R8101 & r8127
+git clone --depth=1 https://github.com/sbwml/package_kernel_r8168 package/kernel/r8168
+git clone --depth=1 https://github.com/sbwml/package_kernel_r8152 package/kernel/r8152
+git clone --depth=1 https://github.com/sbwml/package_kernel_r8101 package/kernel/r8101
+git clone --depth=1 https://github.com/sbwml/package_kernel_r8125 package/kernel/r8125
+git clone --depth=1 https://github.com/sbwml/package_kernel_r8126 package/kernel/r8126
+git clone --depth=1 https://github.com/sbwml/package_kernel_r8127 package/kernel/r8127
+# Realtek 无线驱动程序 - RTL8822CS & RTL8852AU
+git clone --depth=1 https://github.com/sbwml/package_kernel_rtl8822cs package/kernel/rtl8822cs
+git clone --depth=1 https://github.com/sbwml/package_kernel_rtl8852au package/kernel/rtl8852au
+
+# 替换 Docker
+git clone --depth=1 https://github.com/sbwml/luci-app-dockerman -b openwrt-25.12 feeds/luci/applications/luci-app-dockerman
+git clone --depth=1 https://github.com/sbwml/packages_utils_docker feeds/packages/utils/docker
+git clone --depth=1 https://github.com/sbwml/packages_utils_dockerd feeds/packages/utils/dockerd
+git clone --depth=1 https://github.com/sbwml/packages_utils_containerd feeds/packages/utils/containerd
+git clone --depth=1 https://github.com/sbwml/packages_utils_runc feeds/packages/utils/runc
+
 # frpc 翻译
 sed -i 's,frp 服务器,Frp 服务器,g' feeds/luci/applications/luci-app-frps/po/zh_Hans/frps.po
 sed -i 's,frp 客户端,Frp 客户端,g' feeds/luci/applications/luci-app-frpc/po/zh_Hans/frpc.po
 
+# 版本号
+sed -i 's/VERSION_DIST:=$(if $(VERSION_DIST),$(VERSION_DIST),ImmortalWrt)/VERSION_DIST:=$(if $(VERSION_DIST),$(VERSION_DIST),ZeroWrt)/g' include/version.mk
+sed -i 's/VERSION_MANUFACTURER:=$(if $(VERSION_MANUFACTURER),$(VERSION_MANUFACTURER),ImmortalWrt)/VERSION_MANUFACTURER:=$(if $(VERSION_MANUFACTURER),$(VERSION_MANUFACTURER),ZeroWrt)/g' include/version.mk
+
+# 加入网卡驱动（ngbe / txgbe）
+cat << 'EOF' >> package/kernel/linux/modules/netdevices.mk
+
+
+define KernelPackage/ngbe
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Wangxun(R) GbE PCI Express adapters support
+  DEPENDS:=@PCI_SUPPORT +kmod-libwx kmod-mdio-devres
+  KCONFIG:=CONFIG_NGBE
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/wangxun/ngbe/ngbe.ko
+  AUTOLOAD:=$(call AutoProbe,ngbe)
+endef
+
+define KernelPackage/ngbe/description
+ Kernel modules for Wangxun(R) GbE PCI Ethernet chipsets
+endef
+
+$(eval $(call KernelPackage,ngbe))
+
+
+define KernelPackage/txgbe
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Wangxun(R) 10GbE PCI Express adapters support
+  DEPENDS:=@PCI_SUPPORT +kmod-libwx +kmod-pcs-xpcs +kmod-regmap-core
+  KCONFIG:=CONFIG_TXGBE
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/wangxun/txgbe/txgbe.ko
+  AUTOLOAD:=$(call AutoProbe,txgbe)
+endef
+
+define KernelPackage/txgbe/description
+ Kernel modules for Wangxun(R) 10GbE PCI Ethernet chipsets
+endef
+
+$(eval $(call KernelPackage,txgbe))
+
+EOF
