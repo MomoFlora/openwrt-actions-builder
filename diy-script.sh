@@ -110,3 +110,60 @@ endef
 $(eval $(call KernelPackage,txgbe))
 
 EOF
+
+# 支持网卡驱动（lib-parman / libwx / libie-fwlog / libie-adminq）
+cat << 'EOF' >> package/kernel/linux/modules/lib.mk
+
+
+define KernelPackage/lib-parman
+  SUBMENU:=$(LIB_MENU)
+  TITLE:=parman support
+  HIDDEN:=1
+  FILES:=$(LINUX_DIR)/lib/parman.ko
+  KCONFIG:= \
+  CONFIG_PARMAN \
+  CONFIG_TEST_PARMAN=n
+  AUTOLOAD:=$(call AutoProbe,parman)
+endef
+
+$(eval $(call KernelPackage,lib-parman))
+
+
+define KernelPackage/libwx
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=Wangxun(R) Ethernet driver common library
+  DEPENDS:=@PCI_SUPPORT +kmod-phylink +kmod-ptp
+  KCONFIG:=CONFIG_LIBWX
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/wangxun/libwx/libwx.ko
+  AUTOLOAD:=$(call AutoProbe,libwx)
+endef
+
+define KernelPackage/libwx/description
+ Common library for Wangxun(R) Ethernet drivers
+endef
+
+$(eval $(call KernelPackage,libwx))
+
+
+define KernelPackage/libie-fwlog
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=LIBIE_FWLOG
+  KCONFIG:=CONFIG_LIBIE_FWLOG
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/libie/libie_fwlog.ko
+  AUTOLOAD:=$(call AutoLoad,15,libie_fwlog,1)
+endef
+
+$(eval $(call KernelPackage,libie-fwlog))
+
+
+define KernelPackage/libie-adminq
+  SUBMENU:=$(NETWORK_DEVICES_MENU)
+  TITLE:=LIBIE_ADMINQ
+  KCONFIG:=CONFIG_LIBIE_ADMINQ
+  FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/libie/libie_adminq.ko
+  AUTOLOAD:=$(call AutoLoad,15,libie_adminq,1)
+endef
+
+$(eval $(call KernelPackage,libie-adminq))
+
+EOF
