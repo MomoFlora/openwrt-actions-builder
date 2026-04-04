@@ -181,6 +181,24 @@ CONFIG_PACKAGE_ddns-scripts-freedns=y
 CONFIG_PACKAGE_ddns-scripts-godaddy=y
 CONFIG_PACKAGE_ddns-scripts-services=y
 
+### L2TP
+CONFIG_PACKAGE_kmod-l2tp=y
+CONFIG_PACKAGE_kmod-pppol2tp=y
+CONFIG_PACKAGE_ppp-mod-pppol2tp=y
+CONFIG_PACKAGE_xl2tpd=y
+
+### OPENSSL
+CONFIG_OPENSSL_ENGINE=y
+CONFIG_OPENSSL_OPTIMIZE_SPEED=y
+CONFIG_OPENSSL_WITH_ASM=y
+CONFIG_PACKAGE_libopenssl-afalg=y
+CONFIG_PACKAGE_libopenssl-conf=y
+CONFIG_PACKAGE_libopenssl-devcrypto=y
+CONFIG_PACKAGE_libopenssl-legacy=y
+CONFIG_PACKAGE_openssl-util=y
+# CONFIG_PACKAGE_libopenssl-padlock is not set
+# CONFIG_OPENSSL_WITH_ERROR_MESSAGES is not set
+
 ### SHARE NETWORK ###
 CONFIG_PACKAGE_usbmuxd=y
 CONFIG_PACKAGE_kmod-usb-net-rndis=y
@@ -188,21 +206,6 @@ CONFIG_PACKAGE_kmod-usb-net-ipheth=y
 
 ### BBRv3 ###
 CONFIG_PACKAGE_kmod-tcp-bbr=y
-
-### OPENSSL ###
-CONFIG_OPENSSL_ENGINE=y
-CONFIG_OPENSSL_OPTIMIZE_SPEED=y
-CONFIG_OPENSSL_WITH_ASM=y
-# CONFIG_OPENSSL_WITH_ERROR_MESSAGES is not set
-CONFIG_PACKAGE_libopenssl-conf=y
-CONFIG_PACKAGE_libopenssl-devcrypto=y
-CONFIG_PACKAGE_libopenssl-legacy=y
-CONFIG_PACKAGE_libcurl=y
-CONFIG_LIBCURL_OPENSSL=y
-# CONFIG_LIBCURL_MBEDTLS is not set
-# CONFIG_LIBCURL_WOLFSSL is not set
-# CONFIG_LIBCURL_GNUTLS is not set
-# CONFIG_LIBCURL_NOSSL is not set
 
 ### KERNEL MODULES
 CONFIG_PACKAGE_kmod-bonding=y
@@ -321,3 +324,11 @@ CONFIG_PACKAGE_coreutils-sha512sum=y
 CONFIG_PACKAGE_coreutils-sleep=y
 CONFIG_PACKAGE_coreutils-timeout=y
 CONFIG_PACKAGE_coreutils-truncate=y
+
+### VERSION ###
+# CONFIG_IMAGEOPT=y
+# CONFIG_VERSIONOPT=y
+# CONFIG_VERSION_FILENAMES=y
+
+### ZLIB ###
+CONFIG_ZLIB_OPTIMIZE_SPEED=y
