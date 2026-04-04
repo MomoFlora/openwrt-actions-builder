@@ -61,9 +61,6 @@ git clone --depth=1 https://github.com/sbwml/package_kernel_r8101 package/kernel
 git clone --depth=1 https://github.com/sbwml/package_kernel_r8125 package/kernel/r8125
 git clone --depth=1 https://github.com/sbwml/package_kernel_r8126 package/kernel/r8126
 git clone --depth=1 https://github.com/sbwml/package_kernel_r8127 package/kernel/r8127
-# Realtek 无线驱动程序 - RTL8822CS & RTL8852AU
-git clone --depth=1 https://github.com/sbwml/package_kernel_rtl8822cs package/kernel/rtl8822cs
-git clone --depth=1 https://github.com/sbwml/package_kernel_rtl8852au package/kernel/rtl8852au
 
 # 替换 Docker
 git clone --depth=1 https://github.com/sbwml/luci-app-dockerman -b openwrt-25.12 feeds/luci/applications/luci-app-dockerman
