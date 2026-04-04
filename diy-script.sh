@@ -37,6 +37,7 @@ git_sparse_clone main https://github.com/sbwml/openwrt_pkgs bash-completion luci
 
 # 主题
 git clone --depth=1 https://github.com/sbwml/luci-theme-argon -b openwrt-25.12 package/new/luci-theme-argon
+cp -f $GITHUB_WORKSPACE/images/bg.webp package/new/luci-theme-argon/luci-theme-argon/htdocs/luci-static/argon/img/bg.webp
 git clone --depth=1 https://github.com/eamonxg/luci-theme-aurora package/new/luci-theme-aurora
 git clone --depth=1 https://github.com/eamonxg/luci-app-aurora-config package/new/luci-app-aurora-config
 rm -rf package/new/luci-theme-aurora/root/etc/uci-defaults
@@ -68,10 +69,6 @@ git clone --depth=1 https://github.com/sbwml/packages_utils_docker feeds/package
 git clone --depth=1 https://github.com/sbwml/packages_utils_dockerd feeds/packages/utils/dockerd
 git clone --depth=1 https://github.com/sbwml/packages_utils_containerd feeds/packages/utils/containerd
 git clone --depth=1 https://github.com/sbwml/packages_utils_runc feeds/packages/utils/runc
-
-# nginx - openwrt-25.12
-git clone --depth=1 -b openwrt-25.12 https://github.com/MomoFlora/feeds_packages_net_nginx feeds/packages/net/nginx
-git clone --depth=1 -b master https://github.com/MomoFlora/feeds_packages_net_nginx-util feeds/packages/net/nginx-util
 
 # 关闭 CPU 安全缓解
 sed -i 's,rootwait,rootwait mitigations=off,g' target/linux/rockchip/image/default.bootscript
@@ -115,6 +112,19 @@ sed -i '3 a\\t\t"order": 50,' feeds/luci/applications/luci-app-ttyd/root/usr/sha
 sed -i 's/procd_set_param stdout 1/procd_set_param stdout 0/g' feeds/packages/utils/ttyd/files/ttyd.init
 sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/utils/ttyd/files/ttyd.init
 
+# nginx - latest version
+rm -rf feeds/packages/net/nginx
+git clone --depth=1 -b openwrt-25.12 https://github.com/sbwml/feeds_packages_net_nginx feeds/packages/net/nginx
+sed -i 's/procd_set_param stdout 1/procd_set_param stdout 0/g;s/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/net/nginx/files/nginx.init
+
+# nginx - ubus
+sed -i 's/ubus_parallel_req 2/ubus_parallel_req 6/g' feeds/packages/net/nginx/files-luci-support/60_nginx-luci-support
+sed -i '/ubus_parallel_req/a\        ubus_script_timeout 300;' feeds/packages/net/nginx/files-luci-support/60_nginx-luci-support
+
+# nginx - config
+cp -f $GITHUB_WORKSPACE/doc/nginx/luci.locations feeds/packages/net/nginx/files-luci-support/luci.locations
+cp -f $GITHUB_WORKSPACE/doc/nginx/uci.conf.template feeds/packages/net/nginx-util/files/uci.conf.template
+
 # frpc 翻译
 sed -i 's,frp 服务器,Frp 服务器,g' feeds/luci/applications/luci-app-frps/po/zh_Hans/frps.po
 sed -i 's,frp 客户端,Frp 客户端,g' feeds/luci/applications/luci-app-frpc/po/zh_Hans/frpc.po
@@ -137,6 +147,15 @@ sed -i 's/cheaper = 1/cheaper = 2/g' feeds/packages/net/uwsgi/files-luci-support
 # rpcd - 修复超时问题
 sed -i 's/option timeout 30/option timeout 60/g' package/system/rpcd/files/rpcd.config
 sed -i 's#20) \* 1000#60) \* 1000#g' feeds/luci/modules/luci-base/htdocs/luci-static/resources/rpc.js
+
+# LRNG
+cp -f $GITHUB_WORKSPACE/doc/lrng/* target/linux/generic/hack-6.12
+
+# BBRv3
+cp -f $GITHUB_WORKSPACE/doc/bbr3/* target/linux/generic/backport-6.12
+
+# BTF
+cp -f $GITHUB_WORKSPACE/doc/btf/* target/linux/generic/hack-6.12
 
 # 加入网卡驱动（ngbe / txgbe）
 cat << 'EOF' >> package/kernel/linux/modules/netdevices.mk
