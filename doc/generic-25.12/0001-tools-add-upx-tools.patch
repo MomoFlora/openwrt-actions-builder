@@ -1,9 +1,9 @@
-From de1387e3780afbb3a79e361f3b97124eca6c0aa0 Mon Sep 17 00:00:00 2001
-From: sbwml <admin@cooluc.com>
-Date: Fri, 4 Oct 2024 10:39:25 +0800
-Subject: tools: add upx tools
+From fa55fbcd29cd5a6481c8706f5ff6822dc0945dc9 Mon Sep 17 00:00:00 2001
+From: zerowrt-bot <zj18139624826@gmail.com>
+Date: Sat, 4 Apr 2026 18:27:16 +0800
+Subject: [PATCH] tools: add upx tools
 
-Signed-off-by: sbwml <admin@cooluc.com>
+Signed-off-by: zerowrt-bot <zj18139624826@gmail.com>
 ---
  tools/Makefile     |  1 +
  tools/upx/Makefile | 30 ++++++++++++++++++++++++++++++
@@ -11,7 +11,7 @@ Signed-off-by: sbwml <admin@cooluc.com>
  create mode 100644 tools/upx/Makefile
 
 diff --git a/tools/Makefile b/tools/Makefile
-index 79d3954..42b1265 100644
+index 821b4de5c5..7f05deda6c 100644
 --- a/tools/Makefile
 +++ b/tools/Makefile
 @@ -67,6 +67,7 @@ tools-y += pkgconf
@@ -24,7 +24,7 @@ index 79d3954..42b1265 100644
  tools-y += zip
 diff --git a/tools/upx/Makefile b/tools/upx/Makefile
 new file mode 100644
-index 0000000..9004514
+index 0000000000..900451453b
 --- /dev/null
 +++ b/tools/upx/Makefile
 @@ -0,0 +1,30 @@
@@ -59,4 +59,4 @@ index 0000000..9004514
 +
 +$(eval $(call HostBuild))
 -- 
-2.43.5
+2.43.0
