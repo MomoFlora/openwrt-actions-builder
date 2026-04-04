@@ -1,24 +1,15 @@
-From 54de7991f8fcfe4399e476f385286e02517cca9e Mon Sep 17 00:00:00 2001
-From: sbwml <admin@cooluc.com>
-Date: Fri, 4 Oct 2024 10:46:49 +0800
-Subject: rootfs: add upx compression support
+From 7177fc5683a62e5cf71af307771d6d67b537b5d5 Mon Sep 17 00:00:00 2001
+From: zerowrt-bot <zj18139624826@gmail.com>
+Date: Sat, 4 Apr 2026 18:29:55 +0800
+Subject: [PATCH] add upx compression support
 
-* When the upx_list.txt file exists in the source code root directory,
-  it will be compressed by upx.
-
-* fill in the binary path with rootfs as the absolute path, like this:
-
-/usr/bin/xray
-/usr/bin/xray-plugin
-/usr/sbin/haproxy
-
-Signed-off-by: sbwml <admin@cooluc.com>
+Signed-off-by: zerowrt-bot <zj18139624826@gmail.com>
 ---
  include/rootfs.mk | 5 +++++
  1 file changed, 5 insertions(+)
 
 diff --git a/include/rootfs.mk b/include/rootfs.mk
-index 02fa3b1..f778aef 100644
+index 02fa3b13d7..f778aef4d2 100644
 --- a/include/rootfs.mk
 +++ b/include/rootfs.mk
 @@ -121,6 +121,11 @@ define prepare_rootfs
@@ -34,4 +25,4 @@ index 02fa3b1..f778aef 100644
  	$(call mklibs,$(1))
  	$(if $(SOURCE_DATE_EPOCH),find $(1)/ -mindepth 1 -execdir touch -hcd "@$(SOURCE_DATE_EPOCH)" "{}" +)
 -- 
-2.43.5
+2.43.0
