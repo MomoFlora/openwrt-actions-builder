@@ -115,20 +115,6 @@ EOF
 cat << 'EOF' >> package/kernel/linux/modules/lib.mk
 
 
-define KernelPackage/lib-parman
-  SUBMENU:=$(LIB_MENU)
-  TITLE:=parman support
-  HIDDEN:=1
-  FILES:=$(LINUX_DIR)/lib/parman.ko
-  KCONFIG:= \
-  CONFIG_PARMAN \
-  CONFIG_TEST_PARMAN=n
-  AUTOLOAD:=$(call AutoProbe,parman)
-endef
-
-$(eval $(call KernelPackage,lib-parman))
-
-
 define KernelPackage/libwx
   SUBMENU:=$(NETWORK_DEVICES_MENU)
   TITLE:=Wangxun(R) Ethernet driver common library
