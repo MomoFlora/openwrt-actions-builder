@@ -5,7 +5,7 @@ rm -rf feeds/packages/lang/golang
 rm -rf feeds/luci/themes/luci-theme-argon
 rm -rf package/kernel/{r8168,r8101,r8125,r8126,r8127}
 rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
-rm -rf feeds/luci/applications/{luci-app-autoreboot,luci-app-airplay2,luci-app-dae,luci-app-daed,luci-app-dockerman,luci-app-eqos,luci-app-homeproxy,luci-app-openclash,luci-app-passwall}
+rm -rf feeds/luci/applications/{luci-app-argon-config,luci-app-autoreboot,luci-app-airplay2,luci-app-dae,luci-app-daed,luci-app-dockerman,luci-app-eqos,luci-app-homeproxy,luci-app-openclash,luci-app-passwall}
 rm -rf feeds/packages/net/{dae,daed,xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,mosdns,microsocks,naiveproxy,nginx,nginx-util,open-app-filter,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 
 # Git稀疏克隆，只克隆指定目录到本地
