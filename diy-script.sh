@@ -148,6 +148,17 @@ sed -i 's/cheaper = 1/cheaper = 2/g' feeds/packages/net/uwsgi/files-luci-support
 sed -i 's/option timeout 30/option timeout 60/g' package/system/rpcd/files/rpcd.config
 sed -i 's#20) \* 1000#60) \* 1000#g' feeds/luci/modules/luci-base/htdocs/luci-static/resources/rpc.js
 
+# luci-mod 额外
+pushd feeds/luci
+patch -p1 <$GITHUB_WORKSPACE/doc/luci/0001-luci-mod-system-add-modal-overlay-dialog-to-reboot.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/luci/0002-luci-mod-status-displays-actual-process-memory-usage.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/luci/0003-luci-mod-status-storage-index-applicable-only-to-val.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/luci/0004-luci-mod-status-firewall-disable-legacy-firewall-rul.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/luci/0005-luci-mod-system-add-refresh-interval-setting.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/luci/0006-luci-mod-system-mounts-add-docker-directory-mount-po.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/luci/0007-luci-mod-system-add-ucitrack-luci-mod-system-zram.js.patch
+popd
+
 # LRNG
 cp -f $GITHUB_WORKSPACE/doc/lrng/* target/linux/generic/hack-6.12
 
