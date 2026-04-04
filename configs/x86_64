@@ -74,6 +74,63 @@ CONFIG_KERNEL_LRNG=y
 CONFIG_TOOLCHAINOPTS=y
 CONFIG_GCC_USE_VERSION_14=y
 
-# SAVING RAM FOR DAE ###
+### SAVING RAM FOR DAE ###
 CONFIG_PACKAGE_zram-swap=y
 CONFIG_PACKAGE_kmod-lib-lz4=y
+
+### DOCKER ###
+CONFIG_DOCKER_CGROUP_OPTIONS=y
+CONFIG_DOCKER_NET_ENCRYPT=y
+CONFIG_DOCKER_NET_MACVLAN=y
+CONFIG_DOCKER_NET_OVERLAY=y
+CONFIG_DOCKER_NET_TFTP=y
+CONFIG_DOCKER_OPTIONAL_FEATURES=y
+CONFIG_DOCKER_STO_BTRFS=y
+CONFIG_DOCKER_STO_EXT4=y
+CONFIG_PACKAGE_luci-app-dockerman=y
+
+### LUCI ###
+CONFIG_PACKAGE_luci=y
+CONFIG_PACKAGE_luci-lib-base=y
+CONFIG_PACKAGE_luci-lib-ip=y
+CONFIG_PACKAGE_luci-lib-ipkg=y
+CONFIG_PACKAGE_luci-lib-jsonc=y
+CONFIG_PACKAGE_luci-lib-nixio=y
+CONFIG_PACKAGE_luci-nginx=y
+CONFIG_PACKAGE_luci-proto-wireguard=y
+CONFIG_PACKAGE_luci-theme-argon=y
+CONFIG_LUCI_LANG_zh_Hans=y
+# CONFIG_LUCI_CSSTIDY is not set
+# CONFIG_LUCI_JSMIN is not set
+
+### NGINX ###
+CONFIG_PACKAGE_nginx-ssl=y
+CONFIG_PACKAGE_nginx-mod-brotli=y
+CONFIG_PACKAGE_nginx-mod-luci=y
+CONFIG_PACKAGE_nginx-mod-rtmp=y
+CONFIG_PACKAGE_nginx-mod-stream=y
+CONFIG_PACKAGE_nginx-mod-ubus=y
+CONFIG_PACKAGE_nginx-mod-zstd=y
+CONFIG_PACKAGE_nginx-ssl-util=y
+CONFIG_NGINX_DAV=y
+CONFIG_NGINX_HTTP_AUTH_BASIC=y
+CONFIG_NGINX_HTTP_QUIC=y
+CONFIG_NGINX_HTTP_REAL_IP=y
+CONFIG_NGINX_HTTP_SUB=y
+CONFIG_NGINX_STREAM_REAL_IP=y
+
+### APPS ###
+CONFIG_PACKAGE_luci-app-airconnect=y
+CONFIG_PACKAGE_luci-app-airplay2=y
+CONFIG_PACKAGE_luci-app-argon-config=y
+CONFIG_PACKAGE_luci-app-autoreboot=y
+CONFIG_PACKAGE_luci-app-commands=y
+CONFIG_PACKAGE_luci-app-ddns=y
+CONFIG_PACKAGE_luci-app-diskman=y
+CONFIG_PACKAGE_luci-app-eqos=y
+CONFIG_PACKAGE_luci-app-quickfile=y
+CONFIG_PACKAGE_luci-app-frpc=y
+CONFIG_PACKAGE_luci-app-mentohust=y
+CONFIG_PACKAGE_luci-app-mosdns=y
+CONFIG_PACKAGE_luci-app-natmap=y
+CONFIG_PACKAGE_luci-app-netspeedtest=y
