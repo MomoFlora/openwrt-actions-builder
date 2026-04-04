@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# 通用补丁
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0001-tools-add-upx-tools.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0002-rootfs-add-upx-compression-support.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0003-rootfs-add-r-w-permissions-for-UCI-configuration-fil.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0004-build-kernel-add-out-of-tree-kernel-config.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0005-meson-add-platform-variable-to-cross-compilation-fil.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0006-tools-squashfs4-enable-lz4-zstd-compression-support.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0007-config-include-image-add-support-for-squashfs-zstd-c.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0008-include-kernel-Always-collect-module-symvers.patch
+patch -p1 <$GITHUB_WORKSPACE/doc/generic-25.12/0009-include-netfilter-update-kernel-config-options-for-l.patch
+
 # 移除要替换的包
 rm -rf feeds/packages/lang/golang
 rm -rf feeds/luci/themes/luci-theme-argon
@@ -77,14 +88,14 @@ sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/
 sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/grub-pc.cfg
 
 # 设置默认 LAN 口 IP
-sed -i "s/192.168.1.1/$LAN/g" package/base-files/files/bin/config_generate
+sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
 
 # 设置默认密码
-if [ -n "$ROOT_PASSWORD" ]; then
-    # sha256 encryption
-    default_password=$(openssl passwd -5 $ROOT_PASSWORD)
-    sed -i "s|^root:[^:]*:|root:${default_password}:|" package/base-files/files/etc/shadow
-fi
+default_password=$(openssl passwd -5 password)
+sed -i "s|^root:[^:]*:|root:${default_password}:|" package/base-files/files/etc/shadow
+
+# banner
+cp -f $GITHUB_WORKSPACE/doc/banner package/base-files/files/etc/banner
 
 # 使用 nginx 替换 uhttpd
 sed -i 's/+uhttpd /+luci-nginx /g' feeds/luci/collections/luci/Makefile
