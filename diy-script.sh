@@ -5,7 +5,7 @@ rm -rf feeds/packages/lang/golang
 rm -rf feeds/luci/themes/luci-theme-argon
 rm -rf package/kernel/{r8168,r8101,r8125,r8126,r8127}
 rm -rf feeds/packages/utils/{docker,dockerd,containerd,runc}
-rm -rf feeds/luci/applications/{luci-app-dae,luci-app-daed,luci-app-dockerman,luci-app-homeproxy,luci-app-openclash,luci-app-passwall}
+rm -rf feeds/luci/applications/{luci-app-autoreboot,luci-app-dae,luci-app-daed,luci-app-dockerman,luci-app-eqos,luci-app-homeproxy,luci-app-openclash,luci-app-passwall}
 rm -rf feeds/packages/net/{dae,daed,xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,mosdns,microsocks,naiveproxy,nginx,nginx-util,open-app-filter,shadowsocks-libev,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan-plus,tuic-client,v2ray-plugin,xray-plugin,geoview,shadow-tls}
 
 # Git稀疏克隆，只克隆指定目录到本地
@@ -29,6 +29,11 @@ git clone --depth=1 -b v5 https://github.com/sbwml/luci-app-mosdns package/new/m
 git clone --depth=1 https://github.com/destan19/OpenAppFilter package/new/OpenAppFilter
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/new/luci-app-lucky
 git clone --depth=1 https://github.com/sbwml/luci-app-mentohust package/new/mentohust
+git clone --depth=1 https://github.com/sbwml/luci-app-quickfile package/new/luci-app-quickfile
+git clone --depth=1 https://github.com/sbwml/luci-app-airconnect package/new/airconnect
+git clone --depth=1 https://github.com/sbwml/luci-app-airplay2 package/new/luci-app-airplay2
+git clone --depth=1 https://github.com/sbwml/luci-app-qbittorrent package/new/luci-app-qbittorrent
+git_sparse_clone main https://github.com/sbwml/openwrt_pkgs bash-completion luci-app-autoreboot luci-app-eqos luci-app-ota luci-app-rtp2httpd luci-app-socat luci-app-wolplus otahelper rtp2httpd 
 
 # 主题
 git clone --depth=1 https://github.com/sbwml/luci-theme-argon -b openwrt-25.12 package/new/luci-theme-argon
@@ -47,6 +52,7 @@ git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall package
 git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall2 package/new/openwrt-passwall2
 git clone --depth=1 https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/new/openwrt-passwall-packages
 git_sparse_clone master https://github.com/vernesong/OpenClash luci-app-openclash
+git_sparse_clone v5 https://github.com/sbwml/openwrt_helloworld dae daed luci-app-dae luci-app-daed vmlinux-btf
 
 # Realtek 以太网驱动程序 - R8168 & R8125 & R8126 & R8152 & R8101 & r8127
 git clone --depth=1 https://github.com/sbwml/package_kernel_r8168 package/kernel/r8168
