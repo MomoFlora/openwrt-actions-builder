@@ -8,9 +8,9 @@
 <!-- 技能图标 -->
 <p align="center">
   <a href="https://skillicons.dev#gh-light-mode-only" target="_blank">
-    <img align="center" src="https://skillicons.dev/icons?theme=light&perline=14&i=linux,c,cpp,bash,git,github,vim,make" alt="OpenWrt Skills" />
+    <img align="center" src="https://skillicons.dev/icons?theme=light&perline=16&i=linux,c,cpp,bash,git,github,vim,make,cmake,regex,nginx,docker,kubernetes,prometheus,grafana,md" alt="OpenWrt Skills" />
   </a>
   <a href="https://skillicons.dev#gh-dark-mode-only" target="_blank">
-    <img align="center" src="https://skillicons.dev/icons?perline=14&i=linux,c,cpp,bash,git,github,vim,make" alt="OpenWrt Skills" />
+    <img align="center" src="https://skillicons.dev/icons?perline=16&i=linux,c,cpp,bash,git,github,vim,make,cmake,regex,nginx,docker,kubernetes,prometheus,grafana,md" alt="OpenWrt Skills" />
   </a>
 </p>
