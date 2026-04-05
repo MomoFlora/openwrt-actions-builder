@@ -2,6 +2,7 @@ name: X86_64 OpenWrt
 
 on:
   workflow_dispatch:
+  workflow_call:
 #  schedule:
 #    - cron: 0 19 * * *
              
