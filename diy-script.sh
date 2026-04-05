@@ -97,6 +97,9 @@ sed -i "s|^root:[^:]*:|root:${default_password}:|" package/base-files/files/etc/
 # banner
 cp -f $GITHUB_WORKSPACE/doc/banner package/base-files/files/etc/banner
 
+# key
+cp -f $GITHUB_WORKSPACE/doc/key.tar.gz key.tar.gz && tar zxf key.tar.gz && rm -f key.tar.gz
+
 # profile
 sed -i 's#\\u@\\h:\\w\\\$#\\[\\e[32;1m\\][\\u@\\h\\[\\e[0m\\] \\[\\033[01;34m\\]\\W\\[\\033[00m\\]\\[\\e[32;1m\\]]\\[\\e[0m\\]\\\$#g' package/base-files/files/etc/profile
 sed -ri 's/(export PATH=")[^"]*/\1%PATH%:\/opt\/bin:\/opt\/sbin:\/opt\/usr\/bin:\/opt\/usr\/sbin/' package/base-files/files/etc/profile
