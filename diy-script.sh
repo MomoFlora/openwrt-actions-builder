@@ -97,6 +97,18 @@ sed -i "s|^root:[^:]*:|root:${default_password}:|" package/base-files/files/etc/
 # banner
 cp -f $GITHUB_WORKSPACE/doc/banner package/base-files/files/etc/banner
 
+# profile
+sed -i 's#\\u@\\h:\\w\\\$#\\[\\e[32;1m\\][\\u@\\h\\[\\e[0m\\] \\[\\033[01;34m\\]\\W\\[\\033[00m\\]\\[\\e[32;1m\\]]\\[\\e[0m\\]\\\$#g' package/base-files/files/etc/profile
+sed -ri 's/(export PATH=")[^"]*/\1%PATH%:\/opt\/bin:\/opt\/sbin:\/opt\/usr\/bin:\/opt\/usr\/sbin/' package/base-files/files/etc/profile
+sed -i '/ENV/i\export TERM=xterm-color' package/base-files/files/etc/profile
+
+# bash
+sed -i 's#ash#bash#g' package/base-files/files/etc/passwd
+sed -i '\#export ENV=/etc/shinit#a export HISTCONTROL=ignoredups' package/base-files/files/etc/profile
+mkdir -p files/root
+cp -f $GITHUB_WORKSPACE/doc/bash/.bash_profile files/root/.bash_profile
+cp -f $GITHUB_WORKSPACE/doc/bash/.bashrc files/root/.bashrc
+
 # kenrel Vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
 grep HASH target/linux/generic/kernel-6.12 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
