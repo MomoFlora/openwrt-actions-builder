@@ -1,5 +1,64 @@
 #!/bin/bash
 
+. /etc/os-release
+. /lib/functions/uci-defaults.sh
+
+[ $(uname -m) = "x86_64" ] && alias board_name="echo x86_64"
+[ "$OPENWRT_BOARD" = "armsr/armv8" ] && alias board_name="echo armsr,armv8"
+
+# OTA
+OTA_URL="https://api.kejizero.xyz/ota/openwrt-25.12.json"
+
+kernel_version=$(uname -r | sed 's/-.*//' | cut -d. -f1-2)
+
+devices_setup()
+{
+    case "$(board_name)" in
+    ariaboard,photonicat|\
+    ariaboard,photonicat2|\
+    armsom,sige3|\
+    armsom,sige7|\
+    friendlyarm,nanopc-t6|\
+    friendlyarm,nanopi-r2c|\
+    friendlyarm,nanopi-r2c-plus|\
+    friendlyarm,nanopi-r2s|\
+    friendlyarm,nanopi-r3s|\
+    friendlyarm,nanopi-r4s|\
+    friendlyarm,nanopi-r4se|\
+    friendlyarm,nanopi-r5c|\
+    friendlyarm,nanopi-r5s|\
+    friendlyarm,nanopi-r6c|\
+    friendlyarm,nanopi-r6s|\
+    friendlyarm,nanopi-r76s|\
+    huake,guangmiao-g4c|\
+    linkease,easepi-r1|\
+    lunzn,fastrhino-r66s|\
+    lunzn,fastrhino-r68s)
+        uci set irqbalance.irqbalance.enabled='0'
+        uci commit irqbalance
+        service irqbalance stop
+        if [ "$kernel_version" = "6.12" ]; then
+            [ ! -d "/usr/share/openwrt_core" ] && {
+                sed -i '/targets/d' /etc/apk/repositories.d/distfeeds.list
+                echo "https://raw.githubusercontent.com/MomoFlora/openwrt_core/aarch64_generic/$(grep kernel /etc/apk/world | awk -F= '{print $2}')/packages.adb" >> /etc/apk/repositories.d/distfeeds.list
+            }
+            uci set ota.config.api_url="$OTA_URL"
+            uci commit ota
+        fi
+        ;;
+    x86_64)
+        if [ "$kernel_version" = "6.12" ]; then
+            [ ! -d "/usr/share/openwrt_core" ] && {
+                sed -i '/targets/d' /etc/apk/repositories.d/distfeeds.list
+                echo "https://raw.githubusercontent.com/MomoFlora/openwrt_core/x86_64/$(grep kernel /etc/apk/world | awk -F= '{print $2}')/packages.adb" >> /etc/apk/repositories.d/distfeeds.list
+            }
+        fi
+        uci set ota.config.api_url="$OTA_URL"
+        uci commit ota
+        ;;
+    esac
+}
+
 # theme
 if [ -d "/www/luci-static/argon" ] && [ -z "$(uci -q get luci.main.pollinterval)" ]; then
     uci set luci.main.mediaurlbase='/luci-static/argon'
