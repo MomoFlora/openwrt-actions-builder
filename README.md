@@ -14,3 +14,8 @@
     <img align="center" src="https://skillicons.dev/icons?perline=16&i=linux,c,cpp,bash,git,github,vim,lua,cmake,regex,nginx,docker,kubernetes,prometheus,grafana,md" alt="OpenWrt Skills" />
   </a>
 </p>
+
+<p align="center">
+  <img src="./images/zerowrt.png" alt="ZeroWrt" width="1000"/>
+</p>
+
