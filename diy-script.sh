@@ -90,6 +90,9 @@ sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/
 # 设置默认 LAN 口 IP
 sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
 
+# 设置默认主机名
+sed -i "s/ImmortalWrt/ZeroWrt/g" package/base-files/files/bin/config_generate
+
 # 设置默认密码
 default_password=$(openssl passwd -5 password)
 sed -i "s|^root:[^:]*:|root:${default_password}:|" package/base-files/files/etc/shadow
@@ -299,3 +302,8 @@ endef
 $(eval $(call KernelPackage,libie-adminq))
 
 EOF
+
+# 设置作者信息
+sed -i "s/DISTRIB_DESCRIPTION='*.*'/DISTRIB_DESCRIPTION='ZeroWrt-$(date +%Y%m%d)'/g"  package/base-files/files/etc/openwrt_release
+sed -i "s/DISTRIB_REVISION='*.*'/DISTRIB_REVISION=' By MomoFlora'/g" package/base-files/files/etc/openwrt_release
+sed -i "s|^OPENWRT_RELEASE=\".*\"|OPENWRT_RELEASE=\"ZeroWrt 标准版 @R$(date +%Y%m%d) BY MomoFlora\"|" package/base-files/files/usr/lib/os-release
