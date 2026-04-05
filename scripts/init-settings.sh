@@ -129,4 +129,7 @@ fi
 sed -i '/coremark/d' /etc/crontabs/root
 crontab /etc/crontabs/root
 
+# init
+devices_setup
+
 exit 0
