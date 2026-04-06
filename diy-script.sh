@@ -102,6 +102,7 @@ sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
 
 # 设置默认主机名
 sed -i "s/ImmortalWrt/ZeroWrt/g" package/base-files/files/bin/config_generate
+sed -i "s/LibWrt/ZeroWrt/g" package/base-files/files/bin/config_generate
 
 # 设置默认密码
 default_password=$(openssl passwd -5 password)
