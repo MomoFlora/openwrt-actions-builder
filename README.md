@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <img src="./Images/zerowrt.png" alt="ZeroWrt" width="1000"/>
+  <img src="./General/zerowrt.png" alt="ZeroWrt" width="1000"/>
 </p>
 
 ---
