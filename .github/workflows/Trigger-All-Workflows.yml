@@ -24,7 +24,7 @@ jobs:
     IPQ807X-LibWrt:
       uses: ./.github/workflows/IPQ807X-LibWrt.yml
 
-    x86-64-OpenWrt:
+    x86_64-OpenWrt:
       uses: ./.github/workflows/X86_64-OpenWrt.yml
 
 #    Rockchip-OpenWrt:
