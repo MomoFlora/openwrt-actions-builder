@@ -136,4 +136,20 @@ jobs:
         with:
           ccache: false
           mixkey: ${{ matrix.label }}-${{ matrix.repo_branch }}
-          prefix: openwrt
+          prefix: ${{ github.workspace }}/openwrt
+
+      - name: Install Feeds
+        run: |
+          cd openwrt
+          cp -f $GITHUB_WORKSPACE/${{ matrix.label }}/feeds.conf.default feeds.conf.default
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Load Custom Configuration
+        run: |
+          [ -e files ] && mv files cd openwrt/files
+          [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_PATH/.config
+          chmod +x $GITHUB_WORKSPACE/scripts/*.sh
+          chmod +x $DIY_SCRIPT
+          cd $OPENWRT_PATH
+          $GITHUB_WORKSPACE/$DIY_SCRIPT
