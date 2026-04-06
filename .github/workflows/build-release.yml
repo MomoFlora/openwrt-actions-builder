@@ -9,15 +9,18 @@ jobs:
     name: Build ${{ matrix.model }}
     runs-on: ubuntu-24.04
     if: ${{ github.event.repository.owner.id == github.event.sender.id }}
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
         model: ["X86_64", "Rockchip", "IPQ60XX", "IPQ807X"]
+        cache_toolchain: [true]
         include:
           - model: "X86_64"
             label: "X86_64-Lede"
             repo_branch: "master"
-            cache_toolchain: "true"
             repo_url: "https://github.com/coolsnowwolf/lede"
             config_file: "X86_64-Lede/X86_64.config"
             feeds_conf: "X86_64-Lede/feeds.conf.default"
@@ -27,7 +30,6 @@ jobs:
           - model: "Rockchip"
             label: "Rockchip-Lede"
             repo_branch: "master"
-            cache_toolchain: "true"
             repo_url: "https://github.com/coolsnowwolf/lede"
             config_file: "Rockchip-Lede/Rockchip.config"
             feeds_conf: "Rockchip-Lede/feeds.conf.default"
@@ -37,7 +39,6 @@ jobs:
           - model: "IPQ60XX"
             label: "IPQ60XX-LiBwrt"
             repo_branch: "main-nss"
-            cache_toolchain: "true"
             repo_url: "https://github.com/LiBwrt/openwrt-6.x"
             config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
             feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
@@ -46,12 +47,11 @@ jobs:
           - model: "IPQ807X"
             label: "IPQ807X-LiBwrt"
             repo_branch: "main-nss"
-            cache_toolchain: "true"
             repo_url: "https://github.com/LiBwrt/openwrt-6.x"
             config_file: "IPQ807X-LiBwrt/IPQ807X.config"
             feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
             custom_script: "IPQ807X-LiBwrt/diy-script.sh"
-
+        
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -109,7 +109,6 @@ jobs:
         run: |
           git clone --depth 1 ${{ matrix.repo_url }} -b ${{ matrix.repo_branch }} openwrt
           cd openwrt
-          echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
           COMMIT_AUTHOR=$(git show -s --date=short --format="作者: %an")
           echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
           COMMIT_DATE=$(git show -s --date=short --format="时间: %ci")
@@ -120,9 +119,9 @@ jobs:
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
 
       - name: Cache Toolchain
-        if: matrix.cache_toolchain == 'true'
+        if: matrix.cache_toolchain
         uses: HiGarfield/cachewrtbuild@main
         with:
           ccache: false
           mixkey: ${{ matrix.label }}-${{ matrix.repo_branch }}
-          prefix: ${{ env.OPENWRT_PATH }}
+          prefix: openwrt
