@@ -21,7 +21,7 @@ env:
   REPO_URL: https://github.com/LiBwrt/openwrt-6.x
   REPO_BRANCH: main-nss
   CONFIG_FILE: configs/IPQ60XX.config
-  DIY_SCRIPT: diy-script.sh
+  DIY_SCRIPT: diy-ipq.sh
   CACHE_TOOLCHAIN: true
   UPLOAD_BIN_DIR: false
   FIRMWARE_RELEASE: true
