@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU General Public License for more details.
 
-name: Rockchip ImmortalWrt
+name: Rockchip ZeroWrt
 
 on:
   workflow_dispatch:
