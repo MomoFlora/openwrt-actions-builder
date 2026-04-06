@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU General Public License for more details.
 
-name: X86_64 ZeroWrt
+name: X86_64 OpenWrt
 
 on:
   workflow_dispatch:
