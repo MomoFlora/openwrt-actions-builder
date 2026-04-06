@@ -213,7 +213,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.event.inputs.device }}-openwrt-${{ env.latest_release }}
+          name: ${{ matrix.model }}-openwrt
           path: rom/*
 
       - name: Create release
