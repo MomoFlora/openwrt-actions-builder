@@ -9,7 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 # See the GNU General Public License for more details.
 
-name: IPQ60XX OpenWrt
+name: IPQ60XX LibWrt
 
 on:
   workflow_dispatch:
