@@ -38,7 +38,7 @@
 |------|------|
 | 💻 驱动支持 | 支持 X86、Rockchip 平台，内置常用有线 / 无线 / 3G / 4G 网卡驱动，支持 Kmod 扩展 |
 | 💾 轻量稳定 | 精简内核配置，优化存储与日志，提升系统稳定性并延长闪存寿命 |
-| ⚡ NSS 硬件加速 | Qualcommax 平台支持，大幅降低 CPU 占用，提升小包转发性能 |
+| ⚡ NSS 加速 | Qualcommax 平台支持，大幅降低 CPU 占用，提升小包转发性能 |
 | 🐳 Docker 支持 | X86、Rockchip 平台集成 Docker 服务，可在 OpenWrt 内自由部署容器应用 |
 | 🧩 软件生态 | 全平台软件包支持，预置 LuCI、Flow Offload、UPnP、SmartDNS、OpenClash、PassWall 等插件 |
 | 📊 流量监控 | 集成新版 Bandix 流量监控插件，小白也能轻松查看流量状态 |
