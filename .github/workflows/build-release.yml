@@ -120,9 +120,9 @@ jobs:
           echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
 
       - name: Cache Toolchain
-        if: env.CACHE_TOOLCHAIN == 'true'
+        if: matrix.cache_toolchain == 'true'
         uses: HiGarfield/cachewrtbuild@main
         with:
           ccache: false
-          mixkey: ${{ matrix.label }}-${{ matrix.repo_branch }}-${{ matrix.model }}
+          mixkey: ${{ matrix.label }}-${{ matrix.repo_branch }}
           prefix: ${{ env.OPENWRT_PATH }}
