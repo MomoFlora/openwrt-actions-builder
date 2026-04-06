@@ -1,0 +1,50 @@
+name: Build releases
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build ${{ matrix.model }}
+    runs-on: ubuntu-24.04
+    if: ${{ github.event.repository.owner.id == github.event.sender.id }}
+    strategy:
+      fail-fast: false
+      matrix:
+        model: ["X86_64", "Rockchip", "IPQ60XX", "IPQ807X"]
+        include:
+          - model: "X86_64"
+            repo_url: "https://github.com/coolsnowwolf/lede"
+            repo_branch: "master"
+            config_file: "X86_64-Lede/X86_64.config"
+            feeds_conf: "X86_64-Lede/feeds.conf.default"
+            custom_script: "X86_64-Lede/diy-script.sh"
+            clash_kernel: "amd64"
+
+          - model: "Rockchip"
+            repo_url: "https://github.com/coolsnowwolf/lede"
+            repo_branch: "master"
+            config_file: "Rockchip-Lede/Rockchip.config"
+            feeds_conf: "Rockchip-Lede/feeds.conf.default"
+            custom_script: "Rockchip-Lede/diy-script.sh"
+            clash_kernel: "arm64"
+
+          - model: "IPQ60XX"
+            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+            repo_branch: "main-nss"
+            config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
+            feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
+            custom_script: "IPQ60XX-LiBwrt/diy-script.sh"
+
+          - model: "IPQ807X"
+            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+            repo_branch: "main-nss"
+            config_file: "IPQ807X-LiBwrt/IPQ807X.config"
+            feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
+            custom_script: "IPQ807X-LiBwrt/diy-script.sh"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
