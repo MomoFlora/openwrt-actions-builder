@@ -21,8 +21,8 @@ jobs:
 #    IPQ60XX-LibWrt:
 #      uses: ./.github/workflows/IPQ60XX-LibWrt.yml
 
-#    IPQ807X-LibWrt:
-#      uses: ./.github/workflows/IPQ807X-LibWrt.yml
+    IPQ807X-LibWrt:
+      uses: ./.github/workflows/IPQ807X-LibWrt.yml
 
     x86-64-OpenWrt:
       uses: ./.github/workflows/X86_64-OpenWrt.yml
