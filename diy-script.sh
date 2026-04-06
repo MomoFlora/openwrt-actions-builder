@@ -103,7 +103,7 @@ sed -i "s/192.168.1.1/10.0.0.1/g" package/base-files/files/bin/config_generate
 # 设置默认主机名
 sed -i "s/hostname='.*'/hostname='ZeroWrt'/g" package/base-files/files/bin/config_generate
 
-# 默认 WIFI 名称 && 密码
+# 默认 WIFI 名称
 sed -i "s/\(set \${si}\.ssid='\${defaults?.ssid || \"\)[^\"]*\(\"}'\)/\1ZeroWrt\2/" package/network/config/wifi-scripts/files/lib/wifi/mac80211.uc
 
 # 设置默认密码
