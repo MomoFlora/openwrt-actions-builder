@@ -33,35 +33,43 @@ jobs:
             label: "Lede"
             repo_branch: "master"
             repo_url: "https://github.com/coolsnowwolf/lede"
+            openwrt_file: "X86_64-Lede/files"
             config_file: "X86_64-Lede/X86_64.config"
             feeds_conf: "X86_64-Lede/feeds.conf.default"
             custom_script: "X86_64-Lede/diy-script.sh"
+            cache_toolchain: "true"
             clash_kernel: "amd64"
 
           - model: "Rockchip"
             label: "Lede"
             repo_branch: "master"
             repo_url: "https://github.com/coolsnowwolf/lede"
+            openwrt_file: "Rockchip-Lede/files"
             config_file: "Rockchip-Lede/Rockchip.config"
             feeds_conf: "Rockchip-Lede/feeds.conf.default"
             custom_script: "Rockchip-Lede/diy-script.sh"
+            cache_toolchain: "true"
             clash_kernel: "arm64"
 
           - model: "IPQ60XX"
             label: "LiBwrt"
             repo_branch: "main-nss"
             repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+            openwrt_file: "IPQ60XX-LiBwrt/files"        
             config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
             feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
             custom_script: "IPQ60XX-LiBwrt/diy-script.sh"
+            cache_toolchain: "true"
 
           - model: "IPQ807X"
             label: "LiBwrt"
             repo_branch: "main-nss"
             repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+            openwrt_file: "IPQ807X-LiBwrt/files"    
             config_file: "IPQ807X-LiBwrt/IPQ807X.config"
             feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
             custom_script: "IPQ807X-LiBwrt/diy-script.sh"
+            cache_toolchain: "true"
         
     steps:
       - name: Checkout
@@ -147,8 +155,7 @@ jobs:
 
           # Output build
           echo "build_tag=${{ matrix.label }}_${{ matrix.model }}_${{ matrix.repo_branch }}_$(date +"%Y.%m")" >> ${GITHUB_ENV}
-          echo -e "REPO_URL: [ ${{ matrix.repo_url }} ]\nREPO_BRANCH: [ ${{ matrix.repo_branch }}} ]\nREPO_NAME: [ ${{ matrix.label }} ]"
-          df -hT ${PWD}
+          echo -e "REPO_URL: [ ${{ matrix.repo_url }} ]\nREPO_BRANCH: [ ${{ matrix.repo_branch }} ]\nREPO_NAME: [ ${{ matrix.label }} ]"
 
       - name: Load custom feeds
         run: |
@@ -161,7 +168,71 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-#      - name: Load custom configuration
-#        run: |
-#          [[ -d "${{ matrix.model }}-${{ matrix.label }}/files" ]] && mv -f ${{ matrix.model }}-${{ matrix.label }}/files openwrt/files
-#          [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
+      - name: Load custom configuration
+        run: |
+          [[ -d "${{ matrix.openwrt_file }}" ]] && mv -f ${{ matrix.openwrt_file }} openwrt/files
+          [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
+          chmod +x ${{ matrix.custom_script }}
+          cd openwrt
+          ${{ github.workspace }}/${{ matrix.custom_script }}
+          
+      - name: Download DL Package
+        run: |
+          cd openwrt
+          make defconfig
+          make download -j8
+          find dl -size -1024c -exec ls -l {} \;
+          find dl -size -1024c -exec rm -f {} \;
+
+      - name: Cache Toolchain
+        if: ${{ matrix.cache_toolchain == true }}
+        uses: HiGarfield/cachewrtbuild@main
+        with:
+          mixkey: ${{ matrix.label }}_${{ matrix.model }}_${{ matrix.repo_branch }}
+          prefix: ${{ github.workspace }}/openwrt
+
+      - name: Compile Firmware
+        id: compile
+        run: |
+          # Start compiling
+          cd openwrt
+          echo -e "Compiling with $(nproc) threads"
+          make -j$(nproc) || make -j1 || make -j1 V=s
+
+          # Export build metadata
+          df -hT ${PWD}
+          echo "status=success" >> ${GITHUB_OUTPUT}
+
+      - name: Organize Files
+        if: steps.compile.outputs.status == 'success'
+        run: |
+          mkdir -p rom info
+          if [ "${{ matrix.model }}" = "X86_64" ]; then
+            cp -a openwrt/bin/targets/x86/*/*-ext4-combined-efi.img.gz rom/
+            cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
+            cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
+            cp -a openwrt/bin/targets/x86/*/*-generic.manifest info/manifest.txt
+            cp -a openwrt/bin/targets/x86/*/config.buildinfo info/config.buildinfo
+            cd rom && sha256sum *gz > ../info/sha256sums.txt
+          elif [ "${{ matrix.model }}" = "Rockchip" ]; then
+            cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
+            cp -a openwrt/bin/targets/rockchip/*/*.manifest info/manifest.txt
+            cp -a openwrt/bin/targets/rockchip/*/config.buildinfo info/config.buildinfo
+            cd rom && sha256sum *gz > ../info/sha256sums.txt
+          elif [ "${{ matrix.model }}" = "IPQ60XX" ]; then
+            cp -a openwrt/bin/targets/qualcommax/ipq60xx/*.squashfs-sysupgrade.bin rom/
+            cp -a openwrt/bin/targets/qualcommax/ipq60xx/*.squashfs-factory.ubi rom/
+            cp -a openwrt/bin/targets/qualcommax/ipq60xx/*.manifest info/manifest.txt
+            cp -a openwrt/bin/targets/qualcommax/ipq60xx/config.buildinfo info/config.buildinfo
+            cd rom && sha256sum *gz > ../info/sha256sums.txt
+          elif [ "${{ matrix.model }}" = "IPQ807X" ]; then
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-sysupgrade.bin rom/
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-factory.ubi rom/
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.manifest info/manifest.txt
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/config.buildinfo info/config.buildinfo
+            cd rom && sha256sum *gz > ../info/sha256sums.txt
+          fi
+          cd ..
+          tar zcf rom/buildinfo_${{ matrix.model }}.tar.gz info
+
+          
