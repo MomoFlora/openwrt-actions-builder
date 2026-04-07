@@ -1,0 +1,24 @@
+From 74f186bdbdb8f48f33b086dc44726d73eafd353d Mon Sep 17 00:00:00 2001
+From: zerowrt-bot <zj18139624826@gmail.com>
+Date: Sat, 4 Apr 2026 18:35:57 +0800
+Subject: [PATCH] rootfs: add r/w permissions for UCI configuration files
+
+Signed-off-by: zerowrt-bot <zj18139624826@gmail.com>
+---
+ include/rootfs.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/rootfs.mk b/include/rootfs.mk
+index f778aef4d2..d049ca5a6e 100644
+--- a/include/rootfs.mk
++++ b/include/rootfs.mk
+@@ -126,6 +126,7 @@ define prepare_rootfs
+ 			$(STAGING_DIR_HOST)/bin/upx --lzma --best "$(1)$$file" || true; \
+ 		done < "$(TOPDIR)/upx_list.txt"; \
+ 	fi
++	chmod 600 $(1)/etc/config/*
+ 	$(call clean_ipkg,$(1))
+ 	$(call mklibs,$(1))
+ 	$(if $(SOURCE_DATE_EPOCH),find $(1)/ -mindepth 1 -execdir touch -hcd "@$(SOURCE_DATE_EPOCH)" "{}" +)
+-- 
+2.43.0
