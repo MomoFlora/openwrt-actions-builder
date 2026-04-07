@@ -161,7 +161,7 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      - name: Load custom configuration
-        run: |
-          [[ -d "${{ github.workspace }}/${{ matrix.model }}-${{ matrix.label }}/files" ]] && mv -f ${{ github.workspace }}/${{ matrix.model }}-${{ matrix.label }}/files openwrt/files
-          [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
+#      - name: Load custom configuration
+#        run: |
+#          [[ -d "${{ matrix.model }}-${{ matrix.label }}/files" ]] && mv -f ${{ matrix.model }}-${{ matrix.label }}/files openwrt/files
+#          [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
