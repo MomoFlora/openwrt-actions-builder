@@ -33,6 +33,7 @@ jobs:
             label: "Lede"
             repo_branch: "master"
             repo_url: "https://github.com/coolsnowwolf/lede"
+            openwrt_file: "X86_64-Lede/files"
             config_file: "X86_64-Lede/X86_64.config"
             feeds_conf: "X86_64-Lede/feeds.conf.default"
             custom_script: "X86_64-Lede/diy-script.sh"
@@ -42,6 +43,7 @@ jobs:
             label: "Lede"
             repo_branch: "master"
             repo_url: "https://github.com/coolsnowwolf/lede"
+            openwrt_file: "Rockchip-Lede/files"
             config_file: "Rockchip-Lede/Rockchip.config"
             feeds_conf: "Rockchip-Lede/feeds.conf.default"
             custom_script: "Rockchip-Lede/diy-script.sh"
@@ -51,6 +53,7 @@ jobs:
             label: "LiBwrt"
             repo_branch: "main-nss"
             repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+            openwrt_file: "IPQ60XX-LiBwrt/files"        
             config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
             feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
             custom_script: "IPQ60XX-LiBwrt/diy-script.sh"
@@ -59,6 +62,7 @@ jobs:
             label: "LiBwrt"
             repo_branch: "main-nss"
             repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+            openwrt_file: "IPQ807X-LiBwrt/files"    
             config_file: "IPQ807X-LiBwrt/IPQ807X.config"
             feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
             custom_script: "IPQ807X-LiBwrt/diy-script.sh"
@@ -161,7 +165,9 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-#      - name: Load custom configuration
-#        run: |
-#          [[ -d "${{ matrix.model }}-${{ matrix.label }}/files" ]] && mv -f ${{ matrix.model }}-${{ matrix.label }}/files openwrt/files
-#          [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
+      - name: Load custom configuration
+        run: |
+          [[ -d "${{ matrix.openwrt_file }}" ]] && mv -f ${{ matrix.openwrt_file }} openwrt/files
+          [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
+
+          
