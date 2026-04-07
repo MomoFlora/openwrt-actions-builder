@@ -49,7 +49,7 @@ git clone --depth=1 -b 26.x https://github.com/sbwml/packages_lang_golang feeds/
 
 # 添加额外插件
 git clone --depth=1 https://github.com/sirpdboy/luci-app-adguardhome package/new/luci-app-adguardhome
-git clone --depth=1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush package/new/luci-app-serverchan
+git clone --depth=1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush package/new/luci-app-wechatpush
 git clone --depth=1 https://github.com/ilxp/luci-app-ikoolproxy package/new/luci-app-ikoolproxy
 git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff package/new/luci-app-poweroff
 git clone --depth=1 https://github.com/destan19/OpenAppFilter package/new/OpenAppFilter
