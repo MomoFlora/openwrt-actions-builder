@@ -40,36 +40,36 @@ jobs:
             cache_toolchain: "true"
             clash_kernel: "amd64"
 
-          - model: "Rockchip"
-            label: "Lede"
-            repo_branch: "master"
-            repo_url: "https://github.com/coolsnowwolf/lede"
-            openwrt_file: "Rockchip-Lede/files"
-            config_file: "Rockchip-Lede/Rockchip.config"
-            feeds_conf: "Rockchip-Lede/feeds.conf.default"
-            custom_script: "Rockchip-Lede/diy-script.sh"
-            cache_toolchain: "true"
-            clash_kernel: "arm64"
+#          - model: "Rockchip"
+#            label: "Lede"
+#            repo_branch: "master"
+#            repo_url: "https://github.com/coolsnowwolf/lede"
+#            openwrt_file: "Rockchip-Lede/files"
+#            config_file: "Rockchip-Lede/Rockchip.config"
+#            feeds_conf: "Rockchip-Lede/feeds.conf.default"
+#            custom_script: "Rockchip-Lede/diy-script.sh"
+#            cache_toolchain: "true"
+#            clash_kernel: "arm64"
 
-          - model: "IPQ60XX"
-            label: "LiBwrt"
-            repo_branch: "main-nss"
-            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
-            openwrt_file: "IPQ60XX-LiBwrt/files"        
-            config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
-            feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
-            custom_script: "IPQ60XX-LiBwrt/diy-script.sh"
-            cache_toolchain: "true"
+#          - model: "IPQ60XX"
+#            label: "LiBwrt"
+#            repo_branch: "main-nss"
+#            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+#            openwrt_file: "IPQ60XX-LiBwrt/files"        
+#            config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
+#            feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
+#            custom_script: "IPQ60XX-LiBwrt/diy-script.sh"
+#            cache_toolchain: "true"
 
-          - model: "IPQ807X"
-            label: "LiBwrt"
-            repo_branch: "main-nss"
-            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
-            openwrt_file: "IPQ807X-LiBwrt/files"    
-            config_file: "IPQ807X-LiBwrt/IPQ807X.config"
-            feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
-            custom_script: "IPQ807X-LiBwrt/diy-script.sh"
-            cache_toolchain: "true"
+#          - model: "IPQ807X"
+#            label: "LiBwrt"
+#            repo_branch: "main-nss"
+#            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+#            openwrt_file: "IPQ807X-LiBwrt/files"    
+#            config_file: "IPQ807X-LiBwrt/IPQ807X.config"
+#            feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
+#            custom_script: "IPQ807X-LiBwrt/diy-script.sh"
+#            cache_toolchain: "true"
         
     steps:
       - name: Checkout
@@ -152,6 +152,16 @@ jobs:
           # Clone the source code repository
           git clone -q --single-branch --depth=1 --branch=${{ matrix.repo_branch }} ${{ matrix.repo_url }} openwrt
           ln -sf /builder/openwrt ${{ github.workspace }}/openwrt
+          cd openwrt
+          echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
+          COMMIT_AUTHOR=$(git show -s --date=short --format="作者: %an")
+          echo "COMMIT_AUTHOR=$COMMIT_AUTHOR" >> $GITHUB_ENV
+          COMMIT_DATE=$(git show -s --date=short --format="时间: %ci")
+          echo "COMMIT_DATE=$COMMIT_DATE" >> $GITHUB_ENV
+          COMMIT_MESSAGE=$(git show -s --date=short --format="内容: %s")
+          echo "COMMIT_MESSAGE=$COMMIT_MESSAGE" >> $GITHUB_ENV
+          COMMIT_HASH=$(git show -s --date=short --format="hash: %H")
+          echo "COMMIT_HASH=$COMMIT_HASH" >> $GITHUB_ENV
 
           # Output build
           echo "build_tag=${{ matrix.label }}_${{ matrix.model }}_${{ matrix.repo_branch }}_$(date +"%Y.%m")" >> ${GITHUB_ENV}
@@ -198,6 +208,8 @@ jobs:
           cd openwrt
           echo -e "Compiling with $(nproc) threads"
           make -j$(nproc) || make -j1 || make -j1 V=s
+          cd /bin/targets/*/*
+          echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
 
           # Export build metadata
           df -hT ${PWD}
@@ -224,15 +236,39 @@ jobs:
             cp -a openwrt/bin/targets/qualcommax/ipq60xx/*.squashfs-factory.ubi rom/
             cp -a openwrt/bin/targets/qualcommax/ipq60xx/*.manifest info/manifest.txt
             cp -a openwrt/bin/targets/qualcommax/ipq60xx/config.buildinfo info/config.buildinfo
-            cd rom && sha256sum *gz > ../info/sha256sums.txt
+            cd rom && sha256sum * > ../info/sha256sums.txt
           elif [ "${{ matrix.model }}" = "IPQ807X" ]; then
             cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-sysupgrade.bin rom/
             cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-factory.ubi rom/
             cp -a openwrt/bin/targets/qualcommax/ipq807x/*.manifest info/manifest.txt
             cp -a openwrt/bin/targets/qualcommax/ipq807x/config.buildinfo info/config.buildinfo
-            cd rom && sha256sum *gz > ../info/sha256sums.txt
+            cd rom && sha256sum * > ../info/sha256sums.txt
           fi
           cd ..
           tar zcf rom/buildinfo_${{ matrix.model }}.tar.gz info
+          echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
 
-          
+      - name: Upload Firmware To Release
+        if: steps.compile.outputs.status == 'success'
+        uses: ncipollo/release-action@v1
+        with:
+          name: R${{ env.DATE }} for ${{ matrix.model }}
+          allowUpdates: true
+          tag: ${{ matrix.model }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: ${{ github.workspace }}/rom/*
+          body: |
+            **This is OpenWrt Firmware for ${{ matrix.model }}**
+            ### 📒 固件信息
+            - 💻 平台架构: ${{ matrix.model }}
+            - ⚽ 固件源码: ${{ matrix.repo_url }}
+            - 💝 源码分支: ${{ matrix.repo_branch }}
+            - 🚀 内核版本: ${{ env.KERNEL }}
+            - 🌐 默认地址: 10.0.0.1
+            - 🔑 默认密码: password
+            ### 🧊 固件版本
+            - 固件编译前最后一次➦[主源码](${{ matrix.repo_url }})更新记录
+            - ${{ env.COMMIT_AUTHOR }}
+            - ${{ env.COMMIT_DATE }}
+            - ${{ env.COMMIT_MESSAGE }}
+            - ${{ env.COMMIT_HASH }}
