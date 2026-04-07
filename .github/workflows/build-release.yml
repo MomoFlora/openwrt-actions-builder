@@ -144,7 +144,6 @@ jobs:
           # Clone the source code repository
           git clone -q --single-branch --depth=1 --branch=${{ matrix.repo_branch }} ${{ matrix.repo_url }} openwrt
           ln -sf /builder/openwrt ${{ github.workspace }}/openwrt
-          ln -sf /builder/openwrt /home/runner/work/_actions/MomoFlora/openwrt-actions-builder/openwrt-25.12/openwrt
 
           # Output build
           echo "build_tag=${{ matrix.label }}_${{ matrix.model }}_${{ matrix.repo_branch }}_$(date +"%Y.%m")" >> ${GITHUB_ENV}
@@ -161,3 +160,8 @@ jobs:
           cd openwrt
           ./scripts/feeds update -a
           ./scripts/feeds install -a
+
+      - name: Load custom configuration
+        run: |
+          [[ -d "${{ github.workspace }}/${{ matrix.model }}-${{ matrix.label }}files" ]] && mv -f ${{ github.workspace }}/${{ matrix.model }}-${{ matrix.label }}files openwrt/files
+          [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
