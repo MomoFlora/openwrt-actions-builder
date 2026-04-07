@@ -148,5 +148,16 @@ jobs:
 
           # Output build
           echo "build_tag=${{ matrix.label }}_${{ matrix.model }}_${{ matrix.repo_branch }}_$(date +"%Y.%m")" >> ${GITHUB_ENV}
-          echo -e "REPO_URL: [ ${{ matrix.repo_url }} ]\nREPO_BRANCH: [ ${{ matrix.repo_branch }}} ]\nREPO_NAME: [ ${REPO_NAME} ]"
+          echo -e "REPO_URL: [ ${{ matrix.repo_url }} ]\nREPO_BRANCH: [ ${{ matrix.repo_branch }}} ]\nREPO_NAME: [ ${{ matrix.label }} ]"
           df -hT ${PWD}
+
+      - name: Load custom feeds
+        run: |
+          [[ -f "${{ matrix.feeds_conf }}" ]]
+          cp -f ${{ matrix.feeds_conf }} openwrt/feeds.conf.default
+
+      - name: Install Feeds
+        run: |
+          cd openwrt
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
