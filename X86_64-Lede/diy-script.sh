@@ -56,6 +56,7 @@ git clone --depth=1 https://github.com/destan19/OpenAppFilter package/new/OpenAp
 git clone --depth=1 https://github.com/Jason6111/luci-app-netdata package/new/luci-app-netdata
 git clone --depth=1 -b v5-lua https://github.com/sbwml/luci-app-mosdns package/new/luci-app-mosdns
 git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/new/luci-app-lucky
+git clone --depth=1 https://github.com/FUjr/QModem package/new/QModem
 git_sparse_clone main https://github.com/Lienol/openwrt-package luci-app-filebrowser luci-app-ssr-mudb-server
 git_sparse_clone openwrt-18.06 https://github.com/immortalwrt/luci applications/luci-app-eqos
 
