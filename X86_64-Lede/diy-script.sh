@@ -18,6 +18,10 @@ sed -i 's/192.168.1.1/10.0.0.1/g' package/base-files/luci/bin/config_generate
 sed -i 's/LEDE/ZeroWrt/g' package/base-files/files/bin/config_generate
 sed -i 's/LEDE/ZeroWrt/g' package/base-files/luci/bin/config_generate
 
+# 修改默认主题
+sed -i 's/luci-theme-bootstrap/luci-theme-design/g' feeds/luci/collections/luci/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-design/g' feeds/luci/collections/luci-nginx/Makefile
+
 # 更改默认 Shell 为 zsh
 # sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
@@ -26,6 +30,7 @@ sed -i 's|/bin/login|/bin/login -f root|g' feeds/packages/utils/ttyd/files/ttyd.
 
 # 移除要替换的包
 rm -rf feeds/packages/lang/golang
+rm -rf package/libs/xcrypt/libxcrypt
 rm -rf feeds/luci/themes/luci-theme-argon
 rm -rf feeds/packages/net/{open-app-filter,mosdns,lucky}
 rm -rf feeds/luci/applications/{luci-app-argon-config,luci-app-mosdns,luci-app-lucky}
@@ -78,7 +83,20 @@ sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/file
 # 修改本地时间格式
 sed -i 's/os.date()/os.date("%a %Y-%m-%d %H:%M:%S")/g' package/lean/autocore/files/*/index.htm
 
-# 修改版本为编译日期
+# 获取编译日期
 date_version=$(date +"%y.%m.%d")
-orig_version=$(cat "package/lean/default-settings/files/zzz-default-settings" | grep DISTRIB_REVISION= | awk -F "'" '{print $2}')
-sed -i "s/${orig_version}/R${date_version} by MomoFlora/g" package/lean/default-settings/files/zzz-default-settings
+
+# 文件路径
+zzz_file="package/lean/default-settings/files/zzz-default-settings"
+
+# 原来的 DISTRIB_REVISION
+orig_version=$(grep "DISTRIB_REVISION=" "$zzz_file" | awk -F"'" '{print $2}')
+
+# 替换 DISTRIB_REVISION 为 ZeroWrt 和编译日期
+sed -i "s/${orig_version}/R${date_version} by MomoFlora/g" "$zzz_file"
+
+# 替换 DISTRIB_DESCRIPTION 中的 LEDE 为 ZeroWrt
+sed -i "s/LEDE/ZeroWrt/g" "$zzz_file"
+
+./scripts/feeds update -a
+./scripts/feeds install -a
