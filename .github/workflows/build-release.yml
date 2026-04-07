@@ -163,5 +163,5 @@ jobs:
 
       - name: Load custom configuration
         run: |
-          [[ -d "${{ github.workspace }}/${{ matrix.model }}-${{ matrix.label }}files" ]] && mv -f ${{ github.workspace }}/${{ matrix.model }}-${{ matrix.label }}files openwrt/files
+          [[ -d "${{ github.workspace }}/${{ matrix.model }}-${{ matrix.label }}/files" ]] && mv -f ${{ github.workspace }}/${{ matrix.model }}-${{ matrix.label }}/files openwrt/files
           [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
