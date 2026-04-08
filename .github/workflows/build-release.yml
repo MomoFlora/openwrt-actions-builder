@@ -27,8 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-#        model: ["X86_64", "Rockchip", "IPQ60XX", "IPQ807X"]
-        model: ["X86_64", "Rockchip"]
+        model: ["X86_64", "Rockchip", "IPQ60XX", "IPQ807X"]
         include:
           - model: "X86_64"
             label: "Lede"
@@ -52,25 +51,25 @@ jobs:
             cache_toolchain: "true"
             clash_kernel: "arm64"
 
-#          - model: "IPQ60XX"
-#            label: "LiBwrt"
-#            repo_branch: "main-nss"
-#            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
-#            openwrt_file: "IPQ60XX-LiBwrt/files"        
-#            config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
-#            feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
-#            custom_script: "IPQ60XX-LiBwrt/diy-script.sh"
-#            cache_toolchain: "true"
+          - model: "IPQ60XX"
+            label: "LiBwrt"
+            repo_branch: "main-nss"
+            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+            openwrt_file: "IPQ60XX-LiBwrt/files"        
+            config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
+            feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
+            custom_script: "IPQ60XX-LiBwrt/diy-script.sh"
+            cache_toolchain: "true"
 
-#          - model: "IPQ807X"
-#            label: "LiBwrt"
-#            repo_branch: "main-nss"
-#            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
-#            openwrt_file: "IPQ807X-LiBwrt/files"    
-#            config_file: "IPQ807X-LiBwrt/IPQ807X.config"
-#            feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
-#            custom_script: "IPQ807X-LiBwrt/diy-script.sh"
-#            cache_toolchain: "true"
+          - model: "IPQ807X"
+            label: "LiBwrt"
+            repo_branch: "main-nss"
+            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
+            openwrt_file: "IPQ807X-LiBwrt/files"    
+            config_file: "IPQ807X-LiBwrt/IPQ807X.config"
+            feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
+            custom_script: "IPQ807X-LiBwrt/diy-script.sh"
+            cache_toolchain: "true"
         
     steps:
       - name: Checkout
