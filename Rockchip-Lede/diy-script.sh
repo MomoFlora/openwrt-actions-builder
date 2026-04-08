@@ -23,7 +23,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-design/g' feeds/luci/collections/luci/
 sed -i 's/luci-theme-bootstrap/luci-theme-design/g' feeds/luci/collections/luci-nginx/Makefile
 
 # 更改默认 Shell 为 zsh
-# sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
+sed -i 's/\/bin\/ash/\/usr\/bin\/zsh/g' package/base-files/files/etc/passwd
 
 # TTYD 免登录
 sed -i 's|/bin/login|/bin/login -f root|g' feeds/packages/utils/ttyd/files/ttyd.config
@@ -48,14 +48,15 @@ function git_sparse_clone() {
 git clone --depth=1 -b 26.x https://github.com/sbwml/packages_lang_golang feeds/packages/lang/golang
 
 # 添加额外插件
-git clone --depth=1 https://github.com/sirpdboy/luci-app-adguardhome package/new/luci-app-adguardhome
-git clone --depth=1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush package/new/luci-app-serverchan
+git clone --depth=1 https://github.com/MomoFlora/luci-app-adguardhome package/new/luci-app-adguardhome
+git clone --depth=1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush package/new/luci-app-wechatpush
 git clone --depth=1 https://github.com/ilxp/luci-app-ikoolproxy package/new/luci-app-ikoolproxy
 git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff package/new/luci-app-poweroff
 git clone --depth=1 https://github.com/destan19/OpenAppFilter package/new/OpenAppFilter
 git clone --depth=1 https://github.com/Jason6111/luci-app-netdata package/new/luci-app-netdata
 git clone --depth=1 -b v5-lua https://github.com/sbwml/luci-app-mosdns package/new/luci-app-mosdns
-git clone --depth=1 https://github.com/gdy666/luci-app-lucky package/new/luci-app-lucky
+git clone --depth=1 https://github.com/MomoFlora/luci-app-lucky package/new/luci-app-lucky
+git clone --depth=1 https://github.com/FUjr/QModem package/new/QModem
 git_sparse_clone main https://github.com/Lienol/openwrt-package luci-app-filebrowser luci-app-ssr-mudb-server
 git_sparse_clone openwrt-18.06 https://github.com/immortalwrt/luci applications/luci-app-eqos
 
@@ -75,9 +76,6 @@ git_sparse_clone main https://github.com/haiibo/packages luci-theme-atmaterial l
 
 # 更改 Argon 主题背景
 cp -f $GITHUB_WORKSPACE/General/bg1.jpg package/new/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
-
-# x86 型号只显示 CPU 型号
-sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/files/x86/autocore
 
 # 修改本地时间格式
 sed -i 's/os.date()/os.date("%a %Y-%m-%d %H:%M:%S")/g' package/lean/autocore/files/*/index.htm
