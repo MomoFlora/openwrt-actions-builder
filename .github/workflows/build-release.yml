@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
 #        model: ["X86_64", "Rockchip", "IPQ60XX", "IPQ807X"]
-        model: ["X86_64"]
+        model: ["X86_64", "Rockchip"]
         include:
           - model: "X86_64"
             label: "Lede"
@@ -41,16 +41,16 @@ jobs:
             cache_toolchain: "true"
             clash_kernel: "amd64"
 
-#          - model: "Rockchip"
-#            label: "Lede"
-#            repo_branch: "master"
-#            repo_url: "https://github.com/coolsnowwolf/lede"
-#            openwrt_file: "Rockchip-Lede/files"
-#            config_file: "Rockchip-Lede/Rockchip.config"
-#            feeds_conf: "Rockchip-Lede/feeds.conf.default"
-#            custom_script: "Rockchip-Lede/diy-script.sh"
-#            cache_toolchain: "true"
-#            clash_kernel: "arm64"
+          - model: "Rockchip"
+            label: "Lede"
+            repo_branch: "master"
+            repo_url: "https://github.com/coolsnowwolf/lede"
+            openwrt_file: "Rockchip-Lede/files"
+            config_file: "Rockchip-Lede/Rockchip.config"
+            feeds_conf: "Rockchip-Lede/feeds.conf.default"
+            custom_script: "Rockchip-Lede/diy-script.sh"
+            cache_toolchain: "true"
+            clash_kernel: "arm64"
 
 #          - model: "IPQ60XX"
 #            label: "LiBwrt"
