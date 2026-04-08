@@ -70,8 +70,6 @@ jobs:
 
       - name: Clone source code
         id: codes
-        working-directory: /builder
-        if: ${{ steps.init.outputs.status == 'success' && !cancelled() }}
         run: |
           # Clone the source code repository
           git clone -q --single-branch --depth=1 --branch=${{ matrix.repo_branch }} ${{ matrix.repo_url }} openwrt
