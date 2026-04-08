@@ -235,7 +235,6 @@ jobs:
           echo -e "Compiling with $(nproc) threads"
           make -j$(nproc) || make -j1 || make -j1 V=s
           cd /bin/targets/*/*
-          echo "KERNEL=$(cat *.manifest | grep ^kernel | cut -d- -f2 | tr -d ' ')" >> $GITHUB_ENV
 
           # Export build metadata
           df -hT ${PWD}
