@@ -27,7 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        model: ["X86_64", "Rockchip", "IPQ60XX", "IPQ807X"]
+#        model: ["X86_64", "Rockchip", "IPQ60XX", "IPQ807X"]
+        model: ["X86_64"]
         include:
           - model: "X86_64"
             label: "Lede"
