@@ -200,7 +200,7 @@ jobs:
           find dl -size -1024c -exec rm -f {} \;
 
       - name: Cache Toolchain
-        if: ${{ matrix.cache_toolchain == true }}
+        if: ${{ matrix.cache_toolchain == 'true' }}
         uses: HiGarfield/cachewrtbuild@main
         with:
           mixkey: ${{ matrix.label }}_${{ matrix.model }}_${{ matrix.repo_branch }}
