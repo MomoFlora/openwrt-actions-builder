@@ -234,7 +234,6 @@ jobs:
           cd openwrt
           echo -e "Compiling with $(nproc) threads"
           make -j$(nproc) || make -j1 || make -j1 V=s
-          cd /bin/targets/*/*
 
           # Export build metadata
           df -hT ${PWD}
