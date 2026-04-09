@@ -267,6 +267,18 @@ jobs:
             cp -a openwrt/bin/targets/qualcommax/ipq807x/*.manifest info/manifest.txt
             cp -a openwrt/bin/targets/qualcommax/ipq807x/config.buildinfo info/config.buildinfo
             cd rom && sha256sum * > ../info/sha256sums.txt
+          elif [ "${{ matrix.model }}" = "MT7981" ]; then
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-sysupgrade.bin rom/
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-factory.ubi rom/
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.manifest info/manifest.txt
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/config.buildinfo info/config.buildinfo
+            cd rom && sha256sum * > ../info/sha256sums.txt
+          elif [ "${{ matrix.model }}" = "MT7986" ]; then
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-sysupgrade.bin rom/
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-factory.ubi rom/
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.manifest info/manifest.txt
+            cp -a openwrt/bin/targets/qualcommax/ipq807x/config.buildinfo info/config.buildinfo
+            cd rom && sha256sum * > ../info/sha256sums.txt
           fi
           cd ..
           tar zcf rom/buildinfo_${{ matrix.model }}.tar.gz info
