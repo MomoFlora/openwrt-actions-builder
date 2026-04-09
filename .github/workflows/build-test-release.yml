@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        model: ["X86_64", "Rockchip", "IPQ60XX", "IPQ807X", "MT7981", "MT7986"]
+        model: ["X86_64"]
         include:
           - model: "X86_64"
             label: "Lede"
@@ -39,57 +39,6 @@ jobs:
             custom_script: "X86_64-Lede/diy-script.sh"
             cache_toolchain: "true"
             clash_kernel: "amd64"
-
-          - model: "Rockchip"
-            label: "Lede"
-            repo_branch: "master"
-            repo_url: "https://github.com/coolsnowwolf/lede"
-            openwrt_file: "Rockchip-Lede/files"
-            config_file: "Rockchip-Lede/Rockchip.config"
-            feeds_conf: "Rockchip-Lede/feeds.conf.default"
-            custom_script: "Rockchip-Lede/diy-script.sh"
-            cache_toolchain: "true"
-            clash_kernel: "arm64"
-
-          - model: "IPQ60XX"
-            label: "LiBwrt"
-            repo_branch: "main-nss"
-            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
-            openwrt_file: "IPQ60XX-LiBwrt/files"        
-            config_file: "IPQ60XX-LiBwrt/IPQ60XX.config"
-            feeds_conf: "IPQ60XX-LiBwrt/feeds.conf.default"
-            custom_script: "IPQ60XX-LiBwrt/diy-script.sh"
-            cache_toolchain: "true"
-
-          - model: "IPQ807X"
-            label: "LiBwrt"
-            repo_branch: "main-nss"
-            repo_url: "https://github.com/LiBwrt/openwrt-6.x"
-            openwrt_file: "IPQ807X-LiBwrt/files"    
-            config_file: "IPQ807X-LiBwrt/IPQ807X.config"
-            feeds_conf: "IPQ807X-LiBwrt/feeds.conf.default"
-            custom_script: "IPQ807X-LiBwrt/diy-script.sh"
-            cache_toolchain: "true"
-
-          - model: "MT7981"
-            label: "ImmortalWrt-MT798X"
-            repo_branch: "openwrt21.02"
-            repo_url: "https://github.com/hanwckf/immortalwrt-mt798x"
-            openwrt_file: "MT798X-ImmortalWrt/files"    
-            config_file: "MT798X-ImmortalWrt/MT7981.config"
-            feeds_conf: "MT798X-ImmortalWrt/feeds.conf.default"
-            custom_script: "MT798X-ImmortalWrt/diy-script.sh"
-            cache_toolchain: "true"
-
-          - model: "MT7986"
-            label: "ImmortalWrt-MT798X"
-            repo_branch: "openwrt21.02"
-            repo_url: "https://github.com/hanwckf/immortalwrt-mt798x"
-            openwrt_file: "MT798X-ImmortalWrt/files"    
-            config_file: "MT798X-ImmortalWrt/MT7986.config"
-            feeds_conf: "MT798X-ImmortalWrt/feeds.conf.default"
-            custom_script: "MT798X-ImmortalWrt/diy-script.sh"
-            cache_toolchain: "true"
             
     steps:
       - name: Checkout
