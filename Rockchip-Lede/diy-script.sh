@@ -74,6 +74,12 @@ git clone --depth=1 -b 18.06 https://github.com/jerrykuku/luci-app-argon-config 
 git clone --depth=1 https://github.com/xiaoqingfengATGH/luci-theme-infinityfreedom package/new/luci-theme-infinityfreedom
 git_sparse_clone main https://github.com/haiibo/packages luci-theme-atmaterial luci-theme-opentomcat luci-theme-netgear
 
+# 在线用户
+git_sparse_clone main https://github.com/haiibo/packages luci-app-onliner
+sed -i '$i uci set nlbwmon.@nlbwmon[0].refresh_interval=2s' package/lean/default-settings/files/zzz-default-settings
+sed -i '$i uci commit nlbwmon' package/lean/default-settings/files/zzz-default-settings
+chmod 755 package/luci-app-onliner/root/usr/share/onliner/setnlbw.sh
+
 # 更改 Argon 主题背景
 cp -f $GITHUB_WORKSPACE/General/bg1.jpg package/new/luci-theme-argon/htdocs/luci-static/argon/img/bg1.jpg
 
