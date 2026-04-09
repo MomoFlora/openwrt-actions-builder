@@ -152,10 +152,10 @@ jobs:
           [[ -d "${{ matrix.openwrt_file }}" ]] && mv -f ${{ matrix.openwrt_file }} openwrt/files
           [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
           chmod +x ${{ matrix.custom_script }}
+          chmod +x ${{ github.workspace }}/General/*.sh
           cd openwrt
           ${{ github.workspace }}/${{ matrix.custom_script }}
           ${{ github.workspace }}/General/preset-terminal-tools.sh
-          chmod +x ${{ github.workspace }}/General/*.sh
           ${{ github.workspace }}/General/preset-clash-core.sh ${{ matrix.clash_kernel }}
           ${{ github.workspace }}/General/preset-adguard-core.sh ${{ matrix.clash_kernel }}
           
