@@ -104,14 +104,12 @@ jobs:
           [[ -d "${{ matrix.openwrt_file }}" ]] && mv -f ${{ matrix.openwrt_file }} openwrt/files
           [[ -e "${{ matrix.config_file }}" ]] && cp -f ${{ matrix.config_file }} openwrt/.config
           chmod +x ${{ matrix.custom_script }}
+          chmod +x ${{ github.workspace }}/General/*.sh
           cd openwrt
           ${{ github.workspace }}/${{ matrix.custom_script }}
-          if [[ "${{ matrix.model }}" == "X86_64" || "${{ matrix.model }}" == "Rockchip" ]]; then
-            chmod +x ${{ github.workspace }}/General/*.sh
-            ${{ github.workspace }}/General/preset-terminal-tools.sh
-            ${{ github.workspace }}/General/preset-clash-core.sh ${{ matrix.clash_kernel }}
-            ${{ github.workspace }}/General/preset-adguard-core.sh ${{ matrix.clash_kernel }}
-          fi
+          ${{ github.workspace }}/General/preset-terminal-tools.sh
+          ${{ github.workspace }}/General/preset-clash-core.sh ${{ matrix.clash_kernel }}
+          ${{ github.workspace }}/General/preset-adguard-core.sh ${{ matrix.clash_kernel }}
           
       - name: Download DL Package
         run: |
@@ -145,31 +143,12 @@ jobs:
         if: steps.compile.outputs.status == 'success'
         run: |
           mkdir -p rom info
-          if [ "${{ matrix.model }}" = "X86_64" ]; then
-            cp -a openwrt/bin/targets/x86/*/*-ext4-combined-efi.img.gz rom/
-            cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
-            cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
-            cp -a openwrt/bin/targets/x86/*/*-generic.manifest info/manifest.txt
-            cp -a openwrt/bin/targets/x86/*/config.buildinfo info/config.buildinfo
-            cd rom && sha256sum *gz > ../info/sha256sums.txt
-          elif [ "${{ matrix.model }}" = "Rockchip" ]; then
-            cp -a openwrt/bin/targets/rockchip/*/*.img.gz rom/
-            cp -a openwrt/bin/targets/rockchip/*/*.manifest info/manifest.txt
-            cp -a openwrt/bin/targets/rockchip/*/config.buildinfo info/config.buildinfo
-            cd rom && sha256sum *gz > ../info/sha256sums.txt
-          elif [ "${{ matrix.model }}" = "IPQ60XX" ]; then
-            cp -a openwrt/bin/targets/qualcommax/ipq60xx/*.squashfs-sysupgrade.bin rom/
-            cp -a openwrt/bin/targets/qualcommax/ipq60xx/*.squashfs-factory.ubi rom/
-            cp -a openwrt/bin/targets/qualcommax/ipq60xx/*.manifest info/manifest.txt
-            cp -a openwrt/bin/targets/qualcommax/ipq60xx/config.buildinfo info/config.buildinfo
-            cd rom && sha256sum * > ../info/sha256sums.txt
-          elif [ "${{ matrix.model }}" = "IPQ807X" ]; then
-            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-sysupgrade.bin rom/
-            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.squashfs-factory.ubi rom/
-            cp -a openwrt/bin/targets/qualcommax/ipq807x/*.manifest info/manifest.txt
-            cp -a openwrt/bin/targets/qualcommax/ipq807x/config.buildinfo info/config.buildinfo
-            cd rom && sha256sum * > ../info/sha256sums.txt
-          fi
+          cp -a openwrt/bin/targets/x86/*/*-ext4-combined-efi.img.gz rom/
+          cp -a openwrt/bin/targets/x86/*/*-squashfs-combined-efi.img.gz rom/
+          cp -a openwrt/bin/targets/x86/*/*-generic-rootfs.tar.gz rom/
+          cp -a openwrt/bin/targets/x86/*/*-generic.manifest info/manifest.txt
+          cp -a openwrt/bin/targets/x86/*/config.buildinfo info/config.buildinfo
+          cd rom && sha256sum *gz > ../info/sha256sums.txt
           cd ..
           tar zcf rom/buildinfo_${{ matrix.model }}.tar.gz info
 
