@@ -155,11 +155,9 @@ jobs:
           cd openwrt
           ${{ github.workspace }}/${{ matrix.custom_script }}
           ${{ github.workspace }}/General/preset-terminal-tools.sh
-          if [[ "${{ matrix.model }}" == "X86_64" || "${{ matrix.model }}" == "Rockchip" ]]; then
-            chmod +x ${{ github.workspace }}/General/*.sh
-            ${{ github.workspace }}/General/preset-clash-core.sh ${{ matrix.clash_kernel }}
-            ${{ github.workspace }}/General/preset-adguard-core.sh ${{ matrix.clash_kernel }}
-          fi
+          chmod +x ${{ github.workspace }}/General/*.sh
+          ${{ github.workspace }}/General/preset-clash-core.sh ${{ matrix.clash_kernel }}
+          ${{ github.workspace }}/General/preset-adguard-core.sh ${{ matrix.clash_kernel }}
           
       - name: Download DL Package
         run: |
