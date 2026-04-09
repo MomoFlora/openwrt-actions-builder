@@ -28,7 +28,7 @@ index 5607688ccd..5d15265b3d 100755
  	xiaomi,redmi-router-ax6000* |\
  	bananapi,bpi-r3mini* |\
  	netcore,n60 |\
-+       netcore,n60pro |\
++ netcore,n60pro |\
 +	netcore,n60pro-512rom |\
  	glinet,gl-mt6000|\
  	ruijie,rg-x60-pro* |\
