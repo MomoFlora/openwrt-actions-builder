@@ -1,0 +1,276 @@
+From de88b0967215e5e20ee26d22d3a462dcd5616acd Mon Sep 17 00:00:00 2001
+From: zerowrt-bot <zj18139624826@gmail.com>
+Date: Fri, 10 Apr 2026 16:32:00 +0800
+Subject: [PATCH] mediatek: mt7981: add support for Philips HY3000
+
+---
+ .../dts/mediatek/mt7981-philips-hy3000.dts    | 173 ++++++++++++++++++
+ target/linux/mediatek/image/mt7981.mk         |  12 ++
+ .../mt7981/base-files/etc/board.d/02_network  |   6 +
+ .../base-files/lib/preinit/90_extract_caldata |   3 +-
+ .../mt7981/base-files/lib/upgrade/platform.sh |   2 +
+ 5 files changed, 195 insertions(+), 1 deletion(-)
+ create mode 100644 target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-philips-hy3000.dts
+
+diff --git a/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-philips-hy3000.dts b/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-philips-hy3000.dts
+new file mode 100644
+index 0000000..bf8262e
+--- /dev/null
++++ b/target/linux/mediatek/files-5.4/arch/arm64/boot/dts/mediatek/mt7981-philips-hy3000.dts
+@@ -0,0 +1,173 @@
++/dts-v1/;
++#include "mt7981.dtsi"
++
++/ {
++	model = "Philips HY3000";
++	compatible = "philips,hy3000", "mediatek,mt7981";
++
++	chosen {
++		bootargs = "console=ttyS0,115200n1 loglevel=8 \
++			    earlycon=uart8250,mmio32,0x11002000 \
++			    root=PARTLABEL=rootfs rootwait rootfstype=squashfs,f2fs";
++	};
++
++	aliases {
++		led-boot = &status_red_led;
++		led-failsafe = &status_red_led;
++		led-running = &status_green_led;
++		led-upgrade = &status_red_led;
++	};
++
++	leds {
++        compatible = "gpio-leds";
++
++        status_red_led: led-0 {
++                label = "red:status";
++                gpios = <&pio 8 GPIO_ACTIVE_HIGH>;
++        };
++
++        status_green_led: led-1 {
++                label = "green:status";
++                gpios = <&pio 13 GPIO_ACTIVE_LOW>;
++        };
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++        
++		reset {
++			label = "reset";
++			linux,code = <KEY_RESTART>;
++			gpios = <&pio 1 GPIO_ACTIVE_LOW>;
++		};
++
++		mesh {
++			label = "mesh";
++			gpios = <&pio 0 GPIO_ACTIVE_LOW>;
++			linux,code = <BTN_9>;
++			linux,input-type = <EV_SW>;
++		};
++	};
++	
++	gsw: gsw@0 {
++		compatible = "mediatek,mt753x";
++		mediatek,ethsys = <&ethsys>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++	};
++};
++
++&uart0 {
++	status = "okay";
++};
++
++&watchdog {
++	status = "okay";
++};
++
++&eth {
++	status = "okay";
++
++	gmac0: mac@0 {
++		compatible = "mediatek,eth-mac";
++		reg = <0>;
++		phy-mode = "2500base-x";
++
++		fixed-link {
++			speed = <2500>;
++			full-duplex;
++			pause;
++		};
++	};
++
++	gmac1: mac@1 {
++		compatible = "mediatek,eth-mac";
++		reg = <1>;
++		phy-mode = "2500base-x";
++
++		fixed-link {
++			speed = <2500>;
++			full-duplex;
++			pause;
++		};
++	};
++
++	mdio: mdio-bus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++	};
++};
++
++&gsw {
++	mediatek,mdio = <&mdio>;
++	mediatek,mdio_master_pinmux = <0>;
++	reset-gpios = <&pio 39 0>;
++	interrupt-parent = <&pio>;
++	interrupts = <38 IRQ_TYPE_LEVEL_HIGH>;
++	status = "okay";
++
++	port5: port@5 {
++		compatible = "mediatek,mt753x-port";
++		reg = <5>;
++		phy-mode = "sgmii";
++
++		fixed-link {
++			speed = <2500>;
++			full-duplex;
++		};
++	};
++
++	port6: port@6 {
++		compatible = "mediatek,mt753x-port";
++		mediatek,ssc-on;
++		reg = <6>;
++		phy-mode = "sgmii";
++
++		fixed-link {
++			speed = <2500>;
++			full-duplex;
++		};
++	};
++};
++
++&hnat {
++	mtketh-wan = "eth1";
++	mtketh-lan = "eth0";
++	mtketh-max-gmac = <2>;
++	ext-devices-prefix = "usb", "wwan";
++	status = "okay";
++};
++
++&xhci {
++	status = "okay";
++};
++
++&mmc0 {
++    bus-width = <8>;
++	max-frequency = <52000000>;
++	no-sd;
++	no-sdio;
++	cap-mmc-highspeed;
++    pinctrl-names = "default", "state_uhs";
++	pinctrl-0 = <&mmc0_pins_default>;
++	pinctrl-1 = <&mmc0_pins_uhs>;
++	vmmc-supply = <&reg_3p3v>;
++	non-removable;
++	status = "okay";
++};
++
++&pio {
++	mmc0_pins_default: mmc0-pins-default {
++		mux {
++			function = "flash";
++			groups = "emmc_45";
++		};
++	};
++
++	mmc0_pins_uhs: mmc0-pins-uhs {
++		mux {
++			function = "flash";
++			groups = "emmc_45";
++		};
++	};
++};
+diff --git a/target/linux/mediatek/image/mt7981.mk b/target/linux/mediatek/image/mt7981.mk
+index 79dfe1f..c941ae9 100644
+--- a/target/linux/mediatek/image/mt7981.mk
++++ b/target/linux/mediatek/image/mt7981.mk
+@@ -794,6 +794,18 @@ define Device/nradio_wt9103_512m
+ endef
+ TARGET_DEVICES += nradio_wt9103_512m
+ 
++define Device/philips_hy3000
++  DEVICE_VENDOR := Philips
++  DEVICE_MODEL := HY3000
++  DEVICE_DTS := mt7981-philips-hy3000
++  DEVICE_DTS_DIR := $(DTS_DIR)/mediatek
++  SUPPORTED_DEVICES := philips,hy3000
++  DEVICE_PACKAGES := $(MT7981_USB_PKGS) f2fsck losetup mkf2fs kmod-fs-f2fs kmod-mmc \
++	luci-app-samba4
++  IMAGE/sysupgrade.bin := sysupgrade-tar | append-metadata
++endef
++TARGET_DEVICES += philips_hy3000
++
+ define Device/routerich_ax3000
+   DEVICE_VENDOR := Routerich
+   DEVICE_MODEL := AX3000
+diff --git a/target/linux/mediatek/mt7981/base-files/etc/board.d/02_network b/target/linux/mediatek/mt7981/base-files/etc/board.d/02_network
+index ae85c00..ec22eb7 100755
+--- a/target/linux/mediatek/mt7981/base-files/etc/board.d/02_network
++++ b/target/linux/mediatek/mt7981/base-files/etc/board.d/02_network
+@@ -23,6 +23,7 @@ mediatek_setup_interfaces()
+ 	*2500wan-p5*)
+ 		ucidef_set_interfaces_lan_wan "lan1 lan2 lan3 lan4" wan
+ 		;;
++	philips,hy3000 |\
+ 	xiaomi,mi-router-ax3000t|\
+ 	xiaomi,mi-router-ax3000t-stock|\
+ 	xiaomi,mi-router-wr30u*)
+@@ -60,6 +61,11 @@ mediatek_setup_interfaces()
+ 		ucidef_add_switch "switch0" \
+ 			"0:lan" "1:lan" "2:lan" "6u@eth0"
+ 		;;
++	philips,hy3000)
++		lan_mac=$(mmc_get_mac_binary factory 0x74)
++		wan_mac=$(macaddr factory $lan_mac 1)
++		label_mac=$wan_mac
++		;;
+ 	*cmcc,a10*)
+ 		ucidef_set_interfaces_lan_wan "eth0" "eth1"
+ 		ucidef_add_switch "switch0" \
+diff --git a/target/linux/mediatek/mt7981/base-files/lib/preinit/90_extract_caldata b/target/linux/mediatek/mt7981/base-files/lib/preinit/90_extract_caldata
+index bf0a180..1179856 100644
+--- a/target/linux/mediatek/mt7981/base-files/lib/preinit/90_extract_caldata
++++ b/target/linux/mediatek/mt7981/base-files/lib/preinit/90_extract_caldata
+@@ -17,7 +17,8 @@ caldata_validate() {
+ do_extract_caldata() {
+ 	case $(board_name) in
+ 	cmcc,xr30-emmc |\
+-	cmcc,rax3000m-emmc)
++	cmcc,rax3000m-emmc |\
++	philips,hy3000)
+ 		FIRMWARE=MT7981_iPAiLNA_EEPROM.bin
+ 		caldata_validate && exit 0
+ 		caldata_extract_mmc "factory" 0x0 0x1000
+diff --git a/target/linux/mediatek/mt7981/base-files/lib/upgrade/platform.sh b/target/linux/mediatek/mt7981/base-files/lib/upgrade/platform.sh
+index 63a30d9..038dc06 100644
+--- a/target/linux/mediatek/mt7981/base-files/lib/upgrade/platform.sh
++++ b/target/linux/mediatek/mt7981/base-files/lib/upgrade/platform.sh
+@@ -219,6 +219,7 @@ platform_do_upgrade() {
+ 		;;
+ 	cmcc,rax3000m-emmc |\
+ 	cmcc,xr30-emmc |\
++	philips,hy3000 |\
+ 	*emmc*)
+ 		CI_KERNPART="kernel"
+ 		CI_ROOTPART="rootfs"
+@@ -269,6 +270,7 @@ platform_check_image() {
+ 	*newland,nl-wr8103* |\
+ 	newland,nl-wr9103 |\
+ 	nradio,wt9103 |\
++	philips,hy3000 |\
+ 	*snand* |\
+ 	*emmc* |\
+ 	routerich,ax3000)
+-- 
+2.43.0
